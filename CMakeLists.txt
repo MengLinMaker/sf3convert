@@ -14,21 +14,20 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 project(sf3convert)
 
-set(CMAKE_CXX_STANDARD 17)
-
 # Allows deprecated API
 cmake_policy(SET CMP0153 OLD)
 
-# Add source files
+# Add source files, targeting C++ 17
 file(GLOB MY_SOURCES src/*.cpp)
 add_executable("${PROJECT_NAME}" ${MY_SOURCES})
+target_compile_features("${PROJECT_NAME}" PRIVATE cxx_std_17)
 
 # Include external Qt library
 include_directories(/opt/homebrew/Cellar/qt/6.7.0_1/include)
 
 
 
-include (${PROJECT_SOURCE_DIR}/build/UsePkgConfig1.cmake)
+include (${PROJECT_SOURCE_DIR}/FindLib.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fPIC -fPIE")
@@ -65,10 +64,13 @@ include_directories(
       ${VORBIS_INCDIR}
 )
 
-target_link_libraries(sf3convert
+target_link_libraries(${PROJECT_NAME}
       ${QT_LIBRARIES}
       ${OGG_LIB}
       ${VORBIS_LIB}
       vorbisenc
       ${SNDFILE_LIB}
 )
+
+install(TARGETS sf3convert RUNTIME DESTINATION bin)
+install(FILES sf3convert.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)

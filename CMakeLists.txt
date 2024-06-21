@@ -11,7 +11,7 @@
 #  See LICENCE for the licence text and disclaimer of warranty.
 #=============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 project(sf3convert)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -36,15 +36,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fPIC -fPIE")
 # libsndfile
 PKGCONFIG1 (sndfile 1.0.25 SNDFILE_INCDIR SNDFILE_LIBDIR SNDFILE_LIB SNDFILE_CPP)
 if (SNDFILE_INCDIR)
-      message("libsndfile detected ${SNDFILE_INCDIR} ${SNDFILE_LIBDIR} ${SNDFILE_LIB}")
+      message("\nlibsndfile detected ${SNDFILE_INCDIR} ${SNDFILE_LIBDIR} ${SNDFILE_LIB}\n")
 else (SNDFILE_INCDIR)
-   message("libsndfile not found\n")
+      message("libsndfile not found\n")
 endif (SNDFILE_INCDIR)
 
 ## libvorbis
 PKGCONFIG1 (vorbis 1.3.3 VORBIS_INCDIR VORBIS_LIBDIR VORBIS_LIB VORBIS_CPP)
 if (VORBIS_INCDIR)
-      message("libvorbis detected ${VORBIS_INCDIR} ${VORBIS_LIBDIR} ${VORBIS_LIB}")
+      message("\nlibvorbis detected ${VORBIS_INCDIR} ${VORBIS_LIBDIR} ${VORBIS_LIB}\n")
 else (VORBIS_INCDIR)
       message("libvorbis not found\n")
 endif (VORBIS_INCDIR)
@@ -52,27 +52,23 @@ endif (VORBIS_INCDIR)
 ## libogg
 PKGCONFIG1 (ogg 1.3.0 OGG_INCDIR OGG_LIBDIR OGG_LIB OGG_CPP)
 if (OGG_INCDIR)
-      message("libogg detected ${OGG_INCDIR} ${OGG_LIBDIR} ${OGG_LIB}")
+      message("\nlibogg detected ${OGG_INCDIR} ${OGG_LIBDIR} ${OGG_LIB}\n")
 else (OGG_INCDIR)
       message("libogg not found\n")
 endif (OGG_INCDIR)
 
-## Includes
+## Include lib files
 include_directories(
-   ${PROJECT_SOURCE_DIR}
-   ${PROJECT_BINARY_DIR}
-   ${SNDFILE_INCDIR}
-   ${OGG_INCDIR}
-   ${VORBIS_INCDIR}
+      ${PROJECT_BINARY_DIR}
+      ${SNDFILE_INCDIR}
+      ${OGG_INCDIR}
+      ${VORBIS_INCDIR}
 )
 
 target_link_libraries(sf3convert
-   ${QT_LIBRARIES}
-   ${OGG_LIB}
-   ${VORBIS_LIB}
-   vorbisenc
-   ${SNDFILE_LIB}
+      ${QT_LIBRARIES}
+      ${OGG_LIB}
+      ${VORBIS_LIB}
+      vorbisenc
+      ${SNDFILE_LIB}
 )
-
-install(TARGETS sf3convert RUNTIME DESTINATION bin)
-install(FILES sf3convert.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)

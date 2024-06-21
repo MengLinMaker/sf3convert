@@ -28,13 +28,13 @@ release:
 	if test ! -d build.release; then mkdir build.release; fi; \
   cd build.release; \
   cmake -DCMAKE_BUILD_TYPE=RELEASE  .. ;\
-  $(MAKE) -j ${CPUS}
+  make -j ${CPUS}
 
 debug:
 	if test ! -d build.debug; then mkdir build.debug; fi; \
   cd build.debug ; \
   cmake -DCMAKE_BUILD_TYPE=DEBUG .. ; \
-  $(MAKE) -j ${CPUS}
+  make -j ${CPUS}
 
 version:
 	@echo ${VERSION}

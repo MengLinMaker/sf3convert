@@ -40,7 +40,7 @@ Xml::Xml()
 Xml::Xml(QIODevice* device)
    : QTextStream(device)
       {
-      setCodec("UTF-8");
+      // setCodec("UTF-8");
       stack.clear();
       }
 
@@ -72,7 +72,7 @@ void Xml::header()
 void Xml::stag(const QString& s)
       {
       putLevel();
-      *this << '<' << s << '>' << endl;
+      *this << '<' << s << '>' << Qt::endl;
       stack.append(s.split(' ')[0]);
       }
 
@@ -84,7 +84,7 @@ void Xml::stag(const QString& s)
 void Xml::etag()
       {
       putLevel();
-      *this << "</" << stack.takeLast() << '>' << endl;
+      *this << "</" << stack.takeLast() << '>' << Qt::endl;
       }
 
 //---------------------------------------------------------
@@ -102,7 +102,7 @@ void Xml::tagE(const char* format, ...)
       vsnprintf(buffer, BS, format, args);
       *this << buffer;
       va_end(args);
-      *this << "/>" << endl;
+      *this << "/>" << Qt::endl;
       }
 
 //---------------------------------------------------------
@@ -133,7 +133,7 @@ void Xml::ntag(const char* name)
 
 void Xml::netag(const char* s)
       {
-      *this << "</" << s << '>' << endl;
+      *this << "</" << s << '>' << Qt::endl;
       }
 
 void Xml::tag(const QString& name, QVariant data)
@@ -196,7 +196,7 @@ void Xml::dump(int len, const unsigned char* p)
       for (int i = 0; i < len; ++i, ++col) {
             if (col >= 16) {
                   setFieldWidth(0);
-                  *this << endl;
+                  *this << Qt::endl;
                   col = 0;
                   putLevel();
                   setFieldWidth(5);
@@ -204,7 +204,7 @@ void Xml::dump(int len, const unsigned char* p)
             *this << (p[i] & 0xff);
             }
       if (col)
-            *this << endl << dec;
+            *this << Qt::endl << Qt::dec;
       setFieldWidth(0);
       setIntegerBase(10);
       }

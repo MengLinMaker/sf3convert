@@ -26,6 +26,7 @@
 #define __XML_H__
 
 #include <QtCore/Qt>
+#include <QtWidgets/QtWidgets>
 #include <QtCore/QTextStream>
 #include <QtCore/QString>
 #include <QtXml/QDomElement>

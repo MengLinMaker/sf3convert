@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <QtCore/QFile>
-#include <QtCore/QTime>
+#include <QtCore/QElapsedTimer>
 #include "sfont.h"
 
 bool smallSf = false;
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 
       QList<int> presets;
 
-      QTime t;
+      QElapsedTimer t;
       t.start();
       fprintf(stderr, "%s: convert sound file\n", argv[0]);
 

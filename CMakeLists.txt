@@ -27,7 +27,7 @@ include_directories(/opt/homebrew/Cellar/qt/6.7.0_1/include)
 
 
 
-include (${PROJECT_SOURCE_DIR}/FindLib.cmake)
+include (${PROJECT_SOURCE_DIR}/src/FindLib.cmake)
 
 # libsndfile
 PKGCONFIG1 (sndfile 1.0.25 SNDFILE_INCDIR SNDFILE_LIBDIR SNDFILE_LIB SNDFILE_CPP)

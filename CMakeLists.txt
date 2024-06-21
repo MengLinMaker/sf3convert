@@ -22,8 +22,10 @@
 #  See COPYING.LIB for the licence text and disclaimer of warranty.
 #=============================================================================
 
-project(sf3convert)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
+project(sf3convert)
+set(CMAKE_CXX_STANDARD 17)
+
 include (GNUInstallDirs)
 include (${PROJECT_SOURCE_DIR}/build/FindQt5.cmake)
 include (${PROJECT_SOURCE_DIR}/build/UsePkgConfig1.cmake)

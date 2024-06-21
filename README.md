@@ -20,7 +20,7 @@ make release
 
 ## Usage Example:
 
-This compresses the Fluid sound font from 21.8 MBytes to 1.8 MBytes.
+This compresses the sample piano SoundFont from 21.8 MBytes to 1.8 MBytes.
 
 ```Bash
 build.release/sf3convert -z test/piano.sf2 test/piano.sf3

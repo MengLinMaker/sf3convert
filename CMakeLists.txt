@@ -18,20 +18,24 @@ project(sf3convert)
 cmake_policy(SET CMP0153 OLD)
 
 # Add source files, targeting C++ 17
-file(GLOB MY_SOURCES src/*.cpp)
-include_directories(${PROJECT_SOURCE_DIR}/src)
+file(GLOB MY_SOURCES src/*.cpp src/*.h)
 add_executable(${PROJECT_NAME} ${MY_SOURCES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
-# Include external Qt library
-find_package(Qt6 REQUIRED COMPONENTS Core)
+
+
+# Include Qt library via autosearch
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Xml)
 target_link_libraries(
       ${PROJECT_NAME}
       Qt6::Core
+      Qt6::Widgets
+      Qt6::Xml
 )
 
 
 
+# Search for lib dependencies
 include (${PROJECT_SOURCE_DIR}/src/FindLib.cmake)
 
 # libsndfile
@@ -65,7 +69,6 @@ include_directories(
       ${OGG_INCDIR}
       ${VORBIS_INCDIR}
 )
-
 target_link_libraries(${PROJECT_NAME}
       ${OGG_LIB}
       ${VORBIS_LIB}
@@ -73,5 +76,11 @@ target_link_libraries(${PROJECT_NAME}
       ${SNDFILE_LIB}
 )
 
-install(TARGETS sf3convert RUNTIME DESTINATION bin)
-install(FILES sf3convert.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)
+
+
+# Create binary with project name
+include(GNUInstallDirs)
+install(TARGETS ${PROJECT_NAME}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

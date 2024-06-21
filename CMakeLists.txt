@@ -19,11 +19,16 @@ cmake_policy(SET CMP0153 OLD)
 
 # Add source files, targeting C++ 17
 file(GLOB MY_SOURCES src/*.cpp)
-add_executable("${PROJECT_NAME}" ${MY_SOURCES})
-target_compile_features("${PROJECT_NAME}" PRIVATE cxx_std_17)
+include_directories(${PROJECT_SOURCE_DIR}/src)
+add_executable(${PROJECT_NAME} ${MY_SOURCES})
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 # Include external Qt library
-include_directories(/opt/homebrew/Cellar/qt/6.7.0_1/include)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+target_link_libraries(
+      ${PROJECT_NAME}
+      Qt6::Core
+)
 
 
 
@@ -62,7 +67,6 @@ include_directories(
 )
 
 target_link_libraries(${PROJECT_NAME}
-      ${QT_LIBRARIES}
       ${OGG_LIB}
       ${VORBIS_LIB}
       vorbisenc

@@ -5,3 +5,4 @@ build.debug
 win32install
 CMakeLists.txt.user
 .vscode
+.DS_Store

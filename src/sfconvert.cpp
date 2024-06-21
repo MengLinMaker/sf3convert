@@ -149,6 +149,6 @@ int main(int argc, char* argv[])
                   sf.write(&fo, oggQuality, oggAmp, oggSerial);
             fo.close();
             }
-      qDebug("Soundfont converted in: %d ms", t.elapsed());
+      qDebug("Soundfont converted in: %d ms", (int) t.elapsed());
       return 0;
       }

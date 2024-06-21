@@ -29,13 +29,10 @@ include_directories(/opt/homebrew/Cellar/qt/6.7.0_1/include)
 
 include (${PROJECT_SOURCE_DIR}/FindLib.cmake)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fPIC -fPIE")
-
 # libsndfile
 PKGCONFIG1 (sndfile 1.0.25 SNDFILE_INCDIR SNDFILE_LIBDIR SNDFILE_LIB SNDFILE_CPP)
 if (SNDFILE_INCDIR)
-      message("\nlibsndfile detected ${SNDFILE_INCDIR} ${SNDFILE_LIBDIR} ${SNDFILE_LIB}\n")
+      message("\nlibsndfile detected ${SNDFILE_INCDIR} ${SNDFILE_LIBDIR} ${SNDFILE_LIB} ${SNDFILE_CPP}\n")
 else (SNDFILE_INCDIR)
       message("libsndfile not found\n")
 endif (SNDFILE_INCDIR)
@@ -43,7 +40,7 @@ endif (SNDFILE_INCDIR)
 ## libvorbis
 PKGCONFIG1 (vorbis 1.3.3 VORBIS_INCDIR VORBIS_LIBDIR VORBIS_LIB VORBIS_CPP)
 if (VORBIS_INCDIR)
-      message("\nlibvorbis detected ${VORBIS_INCDIR} ${VORBIS_LIBDIR} ${VORBIS_LIB}\n")
+      message("\nlibvorbis detected ${VORBIS_INCDIR} ${VORBIS_LIBDIR} ${VORBIS_LIB} ${VORBIS_CPP}\n")
 else (VORBIS_INCDIR)
       message("libvorbis not found\n")
 endif (VORBIS_INCDIR)
@@ -51,7 +48,7 @@ endif (VORBIS_INCDIR)
 ## libogg
 PKGCONFIG1 (ogg 1.3.0 OGG_INCDIR OGG_LIBDIR OGG_LIB OGG_CPP)
 if (OGG_INCDIR)
-      message("\nlibogg detected ${OGG_INCDIR} ${OGG_LIBDIR} ${OGG_LIB}\n")
+      message("\nlibogg detected ${OGG_INCDIR} ${OGG_LIBDIR} ${OGG_LIB} ${OGG_CPP}\n")
 else (OGG_INCDIR)
       message("libogg not found\n")
 endif (OGG_INCDIR)

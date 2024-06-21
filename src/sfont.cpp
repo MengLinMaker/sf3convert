@@ -940,7 +940,7 @@ void SoundFont::writePhdr()
             zoneIdx += p->zones.size();
             }
       Preset p;
-      memset(&p, sizeof(p), 0);
+      memset(&p, 0,sizeof(p));
       writePreset(zoneIdx, &p);
       }
 
@@ -1071,7 +1071,7 @@ void SoundFont::writeInst()
             zoneIdx += p->zones.size();
             }
       Instrument p;
-      memset(&p, sizeof(p), 0);
+      memset(&p, 0, sizeof(p));
       writeInstrument(zoneIdx, &p);
       }
 
@@ -1446,7 +1446,7 @@ bool SoundFont::writeCode()
       int n        = samples.size() / segments;
       for (int i = 0; i < segments; ++i) {
             char buffer[16];
-            sprintf(buffer, "sf%d.cpp", i + 1);
+            snprintf(buffer, 7, "sf%d.cpp", i + 1);
             f = fopen(buffer, "w+");
             fprintf(f, "//\n//      this is generated code, do not change\n//\n");
             fprintf(f, "#include \"sfont.h\"\n\n");
@@ -1654,12 +1654,12 @@ bool SoundFont::writeCode()
             ++idx;
             }
 
-      fprintf(f, "static Preset* sfPresets[%d] = {\n", presets.size());
+      fprintf(f, "static Preset* sfPresets[%d] = {\n", (int) presets.size());
       for(int idx = 0; idx < presets.size(); ++idx)
             fprintf(f, "      &preset%d,   // %s\n", idx, presets[idx]->name);
       fprintf(f, "      };\n");
 
-      fprintf(f, "static SFont _buildinSf(%d, sfPresets);\n", presets.size());
+      fprintf(f, "static SFont _buildinSf(%d, sfPresets);\n", (int) presets.size());
       fprintf(f, "SFont* createSf() { return &_buildinSf; }\n");
       fprintf(f, "} // end namespace\n");
       fclose(f);
@@ -1840,16 +1840,16 @@ bool SoundFont::writeCode(QList<int> pnums)
             fprintf(f, "      };\n");
 
             fprintf(f, "static Preset preset%d(%d, %d, 0, %d, pzones%d);    // %s\n\n",
-               idx, p->preset, p->bank, p->zones.size(), idx, p->name);
+               idx, p->preset, p->bank, (int) p->zones.size(), idx, p->name);
             ++idx;
             }
 
-      fprintf(f, "static Preset* sfPresets[%d] = {\n", pnums.size());
+      fprintf(f, "static Preset* sfPresets[%d] = {\n", (int) pnums.size());
       foreach(int idx, pnums)
             fprintf(f, "      &preset%d,   // %s\n", idx, presets[idx]->name);
       fprintf(f, "      };\n");
 
-      fprintf(f, "static SFont _buildinSf(%d, sfPresets);\n", pnums.size());
+      fprintf(f, "static SFont _buildinSf(%d, sfPresets);\n", (int) pnums.size());
       fprintf(f, "SFont* createSf() { return &_buildinSf; }\n");
       fprintf(f, "} // end namespace\n");
       fclose(f);

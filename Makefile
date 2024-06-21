@@ -27,13 +27,13 @@ CPUS = 2
 release:
 	if test ! -d build.release; then mkdir build.release; fi; \
   cd build.release; \
-  cmake -DCMAKE_BUILD_TYPE=RELEASE  .. ;\
-  make -j ${CPUS}
+  cmake -DCMAKE_BUILD_TYPE=RELEASE .. -G Ninja; \
+  ninja -j ${CPUS}
 
 debug:
 	if test ! -d build.debug; then mkdir build.debug; fi; \
   cd build.debug ; \
-  cmake -DCMAKE_BUILD_TYPE=DEBUG .. ; \
+  cmake -DCMAKE_BUILD_TYPE=DEBUG .. -G Ninja; \
   make -j ${CPUS}
 
 version:

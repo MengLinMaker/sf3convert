@@ -27,3 +27,6 @@ debug:
 
 clean:
 	rm -rf build.debug build.release
+
+check:
+	build.release/sf3convert -z test/piano.sf2 test/piano.sf3

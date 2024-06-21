@@ -19,20 +19,25 @@
 #  from your version. (This exception is necessary should this work be
 #  included in a GPL-licenced work.)
 #
-#  See COPYING.LIB for the licence text and disclaimer of warranty.
+#  See LICENCE for the licence text and disclaimer of warranty.
 #=============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
 project(sf3convert)
+
 set(CMAKE_CXX_STANDARD 17)
 
-include (GNUInstallDirs)
-include (${PROJECT_SOURCE_DIR}/build/FindQt5.cmake)
-include (${PROJECT_SOURCE_DIR}/build/UsePkgConfig1.cmake)
-# set(CMAKE_VERBOSE_MAKEFILE ON)
+# Allows deprecated API
+cmake_policy(SET CMP0153 OLD)
 
-set(QT_MIN_VERSION    "5.6")
-set(QT_USE_QTXML         TRUE)
+# Add source files
+file(GLOB MY_SOURCES src/*.cpp)
+add_executable("${PROJECT_NAME}" ${MY_SOURCES})
+
+# Include external Qt library
+include_directories(/opt/homebrew/Cellar/qt/6.7.0_1/include)
+
+include (${PROJECT_SOURCE_DIR}/build/UsePkgConfig1.cmake)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
@@ -42,10 +47,6 @@ if (MINGW)
 else (MINGW)
       set(CMAKE_CXX_FLAGS   "${CMAKE_CXX_FLAGS} -g -fPIC -fPIE")
 endif (MINGW)
-
-add_executable(sf3convert
-   sfconvert.cpp sfont.cpp xml.cpp
-   )
 
 if (MINGW)
    target_link_libraries(sf3convert

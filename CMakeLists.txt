@@ -14,9 +14,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 project(sf3convert)
 
-# Allows deprecated API
-cmake_policy(SET CMP0153 OLD)
-
 # Add source files, targeting C++ 17
 file(GLOB MY_SOURCES src/*.cpp src/*.h)
 add_executable(${PROJECT_NAME} ${MY_SOURCES})
@@ -26,54 +23,28 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 # Include Qt library via autosearch
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Xml)
-target_link_libraries(
-      ${PROJECT_NAME}
+
+# Autosearch lib dependencies
+find_package(PkgConfig REQUIRED)
+
+# libsndfile
+pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile>=1.0.25)
+
+# libvorbis
+pkg_check_modules(VORBIS REQUIRED IMPORTED_TARGET vorbis>=1.3.3)
+
+# libogg
+pkg_check_modules(OGG REQUIRED IMPORTED_TARGET ogg>=1.3.0)
+
+# Include lib files
+target_link_libraries(${PROJECT_NAME}
       Qt6::Core
       Qt6::Widgets
       Qt6::Xml
-)
-
-
-
-# Search for lib dependencies
-include (${PROJECT_SOURCE_DIR}/src/FindLib.cmake)
-
-# libsndfile
-PKGCONFIG1 (sndfile 1.0.25 SNDFILE_INCDIR SNDFILE_LIBDIR SNDFILE_LIB SNDFILE_CPP)
-if (SNDFILE_INCDIR)
-      message("\nlibsndfile detected ${SNDFILE_INCDIR} ${SNDFILE_LIBDIR} ${SNDFILE_LIB} ${SNDFILE_CPP}\n")
-else (SNDFILE_INCDIR)
-      message("libsndfile not found\n")
-endif (SNDFILE_INCDIR)
-
-## libvorbis
-PKGCONFIG1 (vorbis 1.3.3 VORBIS_INCDIR VORBIS_LIBDIR VORBIS_LIB VORBIS_CPP)
-if (VORBIS_INCDIR)
-      message("\nlibvorbis detected ${VORBIS_INCDIR} ${VORBIS_LIBDIR} ${VORBIS_LIB} ${VORBIS_CPP}\n")
-else (VORBIS_INCDIR)
-      message("libvorbis not found\n")
-endif (VORBIS_INCDIR)
-
-## libogg
-PKGCONFIG1 (ogg 1.3.0 OGG_INCDIR OGG_LIBDIR OGG_LIB OGG_CPP)
-if (OGG_INCDIR)
-      message("\nlibogg detected ${OGG_INCDIR} ${OGG_LIBDIR} ${OGG_LIB} ${OGG_CPP}\n")
-else (OGG_INCDIR)
-      message("libogg not found\n")
-endif (OGG_INCDIR)
-
-## Include lib files
-include_directories(
-      ${PROJECT_BINARY_DIR}
-      ${SNDFILE_INCDIR}
-      ${OGG_INCDIR}
-      ${VORBIS_INCDIR}
-)
-target_link_libraries(${PROJECT_NAME}
-      ${OGG_LIB}
-      ${VORBIS_LIB}
+      ${OGG_LDFLAGS}
+      ${VORBIS_LDFLAGS}
       vorbisenc
-      ${SNDFILE_LIB}
+      ${SNDFILE_LDFLAGS}
 )
 
 

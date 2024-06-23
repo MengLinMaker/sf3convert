@@ -983,7 +983,12 @@ void SoundFont::writePreset(int zoneIdx, const Preset *preset)
       memset(name, 0, 20);
       if (preset->name)
             memcpy(name, preset->name, strlen(preset->name));
-      write(name, 20);
+      try {
+            std::strlen(preset->name);
+            write(name, 20);
+      } catch (int e) {
+            write("EOP", 20);
+      }
       writeWord(preset->preset);
       writeWord(preset->bank);
       writeWord(zoneIdx);
@@ -1149,8 +1154,10 @@ void SoundFont::writeSample(const Sample *s)
       if (s->name)
             memcpy(name, s->name, strlen(s->name));
       // End of sample message teminates "shdr" chunk
-      if (s->samplerate == 0) write("EOS", 20);
-      else write(name, 20);
+      if (s->samplerate == 0)
+            write("EOS", 20);
+      else
+            write(name, 20);
       writeDword(s->start);
       writeDword(s->end);
       writeDword(s->loopstart);

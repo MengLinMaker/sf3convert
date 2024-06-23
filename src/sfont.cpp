@@ -1115,11 +1115,11 @@ void SoundFont::writeInst()
 
 void SoundFont::writeInstrument(int zoneIdx, const Instrument *instrument)
 {
-      char name[20];
-      memset(name, 0, 20);
       if (instrument->name)
-            memcpy(name, instrument->name, strlen(instrument->name));
-      write(name, 20);
+            write(instrument->name, 20);
+      else
+            // End of instrument message teminates "inst" chunk
+            write("EOI", 20);
       writeWord(zoneIdx);
 }
 

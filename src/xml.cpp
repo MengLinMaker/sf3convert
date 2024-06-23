@@ -130,28 +130,28 @@ void Xml::tag(const QString &name, QVariant data)
       QString ename(name.split(' ')[0]);
 
       putLevel();
-      switch (data.type())
+      switch (data.typeId())
       {
-      case QVariant::Bool:
-      case QVariant::Char:
-      case QVariant::Int:
-      case QVariant::UInt:
+      case QMetaType::Bool:
+      case QMetaType::Char:
+      case QMetaType::Int:
+      case QMetaType::UInt:
             *this << "<" << name << ">";
             *this << data.toInt();
             *this << "</" << ename << ">\n";
             break;
-      case QVariant::Double:
+      case QMetaType::Double:
             *this << "<" << name << ">";
             *this << data.value<double>();
             *this << "</" << ename << ">\n";
             break;
-      case QVariant::String:
+      case QMetaType::QString:
             *this << "<" << name << ">";
             *this << xmlString(data.value<QString>());
             *this << "</" << ename << ">\n";
             break;
       default:
-            qDebug("Xml::tag: unsupported type %d\n", data.type());
+            qDebug("Xml::tag: unsupported type %d\n", data.typeId());
             // abort();
             break;
       }

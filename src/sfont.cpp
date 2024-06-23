@@ -1148,7 +1148,9 @@ void SoundFont::writeSample(const Sample *s)
       memset(name, 0, 20);
       if (s->name)
             memcpy(name, s->name, strlen(s->name));
-      write(name, 20);
+      // End of sample message teminates "shdr" chunk
+      if (s->samplerate == 0) write("EOS", 20);
+      else write(name, 20);
       writeDword(s->start);
       writeDword(s->end);
       writeDword(s->loopstart);

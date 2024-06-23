@@ -25,8 +25,8 @@ bool smallSf = false;
 //   usage
 //---------------------------------------------------------
 
-static void usage(const char* pname)
-      {
+static void usage(const char *pname)
+{
       fprintf(stderr, "usage: %s [-flags] soundfont [outfile]\n", pname);
       fprintf(stderr, "   -z     compress sf\n");
       fprintf(stderr, "   -q qq  ogg quality\n");
@@ -37,15 +37,15 @@ static void usage(const char* pname)
       fprintf(stderr, "   -d     dump presets\n");
       fprintf(stderr, "   -s     create small sf (one instrument/preset), pan to 0\n");
       fprintf(stderr, "   -S nn  ogg serial number\n");
-      }
+}
 
 //---------------------------------------------------------
 //   main
 //---------------------------------------------------------
 
-int main(int argc, char* argv[])
-      {
-      bool xml  = false;
+int main(int argc, char *argv[])
+{
+      bool xml = false;
       bool code = false;
       bool dump = false;
       bool compress = false;
@@ -60,84 +60,93 @@ int main(int argc, char* argv[])
       fprintf(stderr, "%s: convert sound file\n", argv[0]);
 
       int c;
-      while ((c = getopt(argc, argv, "xcp:dS:szq:a:")) != EOF) {
-            switch(c) {
-                  case 'x':
-                        xml = true;
-                        break;
-                  case 'c':
-                        code = true;
-                        break;
-                  case 'p':
-                        presets.append(atoi(optarg));
-                        break;
-                  case 'd':
-                        dump = true;
-                        break;
-                  case 'S':
-                        oggSerial = atoi(optarg);
-                        break;
-                  case 's':
-                        smallSf = true;
-                        break;
-                  case 'z':
-                        compress = true;
-                        break;
-                  case 'q':
-                        oggQuality = atof(optarg);
-                        break;
-                  case 'a':
-                        oggAmp = atof(optarg);
-                        break;
-                  default:
-                        usage(argv[0]);
-                        exit(1);
-                  }
+      while ((c = getopt(argc, argv, "xcp:dS:szq:a:")) != EOF)
+      {
+            switch (c)
+            {
+            case 'x':
+                  xml = true;
+                  break;
+            case 'c':
+                  code = true;
+                  break;
+            case 'p':
+                  presets.append(atoi(optarg));
+                  break;
+            case 'd':
+                  dump = true;
+                  break;
+            case 'S':
+                  oggSerial = atoi(optarg);
+                  break;
+            case 's':
+                  smallSf = true;
+                  break;
+            case 'z':
+                  compress = true;
+                  break;
+            case 'q':
+                  oggQuality = atof(optarg);
+                  break;
+            case 'a':
+                  oggAmp = atof(optarg);
+                  break;
+            default:
+                  usage(argv[0]);
+                  exit(1);
             }
-      const char* pname = argv[0];
+      }
+      const char *pname = argv[0];
 
       argc -= optind;
       argv += optind;
-      if (xml && (argc != 2)) {
+      if (xml && (argc != 2))
+      {
             usage(pname);
             exit(2);
-            }
-      if ((code && (argc != 1)) || (dump && argc != 1)) {
+      }
+      if ((code && (argc != 1)) || (dump && argc != 1))
+      {
             usage(pname);
             exit(3);
-            }
-      if (!xml && !code && !dump && !compress) {
+      }
+      if (!xml && !code && !dump && !compress)
+      {
             usage(pname);
             exit(4);
-            }
+      }
 
       SoundFont sf(argv[0]);
 
-      if (!sf.read()) {
+      if (!sf.read())
+      {
             fprintf(stderr, "sf read error\n");
             exit(3);
-            }
+      }
 
-      if (code) {
+      if (code)
+      {
             if (presets.isEmpty())
                   sf.writeCode();
             else
                   sf.writeCode(presets);
-            }
+      }
       else if (dump)
             sf.dumpPresets();
-      else if (compress) {
+      else if (compress)
+      {
             QFile fo(argv[1]);
-            if (!fo.open(QIODevice::WriteOnly)) {
+            if (!fo.open(QIODevice::WriteOnly))
+            {
                   fprintf(stderr, "cannot open <%s>\n", argv[2]);
                   exit(2);
-                  }
+            }
             if (xml)
                   sf.writeXml(&fo);
             else
                   sf.write(&fo, oggQuality, oggAmp, oggSerial);
             fo.close();
-            }
-      qDebug("Soundfont converted in: %d ms", (int) t.elapsed());
-      return 0;
       }
+      qDebug("Soundfont converted in: %d ms", (int)t.elapsed());
+      return 0;
+}

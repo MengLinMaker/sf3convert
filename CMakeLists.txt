@@ -15,7 +15,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 project(sf3convert)
 
 # Add source files, targeting C++ 17
-file(GLOB MY_SOURCES src/*.cpp src/*.h)
+file(GLOB MY_SOURCES src/*.cpp)
 add_executable(${PROJECT_NAME} ${MY_SOURCES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
@@ -52,6 +52,6 @@ target_link_libraries(${PROJECT_NAME}
 # Create binary with project name
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

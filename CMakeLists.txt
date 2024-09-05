@@ -38,13 +38,13 @@ pkg_check_modules(OGG REQUIRED IMPORTED_TARGET ogg>=1.3.0)
 
 # Include lib files
 target_link_libraries(${PROJECT_NAME}
-      Qt6::Core
-      Qt6::Widgets
-      Qt6::Xml
-      ${OGG_LDFLAGS}
-      ${VORBIS_LDFLAGS}
-      vorbisenc
-      ${SNDFILE_LDFLAGS}
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::Xml
+    ${OGG_LDFLAGS}
+    ${VORBIS_LDFLAGS}
+    vorbisenc
+    ${SNDFILE_LDFLAGS}
 )
 
 
@@ -52,6 +52,6 @@ target_link_libraries(${PROJECT_NAME}
 # Create binary with project name
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
-      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

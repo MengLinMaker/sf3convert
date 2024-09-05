@@ -23,14 +23,14 @@ QString docName;
 
 Xml::Xml()
 {
-      stack.clear();
+	stack.clear();
 }
 
 Xml::Xml(QIODevice *device)
-    : QTextStream(device)
+	: QTextStream(device)
 {
-      // setCodec("UTF-8");
-      stack.clear();
+	// setCodec("UTF-8");
+	stack.clear();
 }
 
 //---------------------------------------------------------
@@ -39,9 +39,9 @@ Xml::Xml(QIODevice *device)
 
 void Xml::putLevel()
 {
-      int level = stack.size();
-      for (int i = 0; i < level * 2; ++i)
-            *this << ' ';
+	int level = stack.size();
+	for (int i = 0; i < level * 2; ++i)
+		*this << ' ';
 }
 
 //---------------------------------------------------------
@@ -50,7 +50,7 @@ void Xml::putLevel()
 
 void Xml::header()
 {
-      *this << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	*this << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 }
 
 //---------------------------------------------------------
@@ -60,9 +60,9 @@ void Xml::header()
 
 void Xml::stag(const QString &s)
 {
-      putLevel();
-      *this << '<' << s << '>' << Qt::endl;
-      stack.append(s.split(' ')[0]);
+	putLevel();
+	*this << '<' << s << '>' << Qt::endl;
+	stack.append(s.split(' ')[0]);
 }
 
 //---------------------------------------------------------
@@ -72,8 +72,8 @@ void Xml::stag(const QString &s)
 
 void Xml::etag()
 {
-      putLevel();
-      *this << "</" << stack.takeLast() << '>' << Qt::endl;
+	putLevel();
+	*this << "</" << stack.takeLast() << '>' << Qt::endl;
 }
 
 //---------------------------------------------------------
@@ -83,15 +83,15 @@ void Xml::etag()
 
 void Xml::tagE(const char *format, ...)
 {
-      va_list args;
-      va_start(args, format);
-      putLevel();
-      *this << '<';
-      char buffer[BS];
-      vsnprintf(buffer, BS, format, args);
-      *this << buffer;
-      va_end(args);
-      *this << "/>" << Qt::endl;
+	va_list args;
+	va_start(args, format);
+	putLevel();
+	*this << '<';
+	char buffer[BS];
+	vsnprintf(buffer, BS, format, args);
+	*this << buffer;
+	va_end(args);
+	*this << "/>" << Qt::endl;
 }
 
 //---------------------------------------------------------
@@ -100,8 +100,8 @@ void Xml::tagE(const char *format, ...)
 
 void Xml::tagE(const QString &s)
 {
-      putLevel();
-      *this << '<' << s << "/>\n";
+	putLevel();
+	*this << '<' << s << "/>\n";
 }
 
 //---------------------------------------------------------
@@ -111,8 +111,8 @@ void Xml::tagE(const QString &s)
 
 void Xml::ntag(const char *name)
 {
-      putLevel();
-      *this << "<" << name << ">";
+	putLevel();
+	*this << "<" << name << ">";
 }
 
 //---------------------------------------------------------
@@ -122,39 +122,39 @@ void Xml::ntag(const char *name)
 
 void Xml::netag(const char *s)
 {
-      *this << "</" << s << '>' << Qt::endl;
+	*this << "</" << s << '>' << Qt::endl;
 }
 
 void Xml::tag(const QString &name, QVariant data)
 {
-      QString ename(name.split(' ')[0]);
+	QString ename(name.split(' ')[0]);
 
-      putLevel();
-      switch (data.typeId())
-      {
-      case QMetaType::Bool:
-      case QMetaType::Char:
-      case QMetaType::Int:
-      case QMetaType::UInt:
-            *this << "<" << name << ">";
-            *this << data.toInt();
-            *this << "</" << ename << ">\n";
-            break;
-      case QMetaType::Double:
-            *this << "<" << name << ">";
-            *this << data.value<double>();
-            *this << "</" << ename << ">\n";
-            break;
-      case QMetaType::QString:
-            *this << "<" << name << ">";
-            *this << xmlString(data.value<QString>());
-            *this << "</" << ename << ">\n";
-            break;
-      default:
-            qDebug("Xml::tag: unsupported type %d\n", data.typeId());
-            // abort();
-            break;
-      }
+	putLevel();
+	switch (data.typeId())
+	{
+	case QMetaType::Bool:
+	case QMetaType::Char:
+	case QMetaType::Int:
+	case QMetaType::UInt:
+		*this << "<" << name << ">";
+		*this << data.toInt();
+		*this << "</" << ename << ">\n";
+		break;
+	case QMetaType::Double:
+		*this << "<" << name << ">";
+		*this << data.value<double>();
+		*this << "</" << ename << ">\n";
+		break;
+	case QMetaType::QString:
+		*this << "<" << name << ">";
+		*this << xmlString(data.value<QString>());
+		*this << "</" << ename << ">\n";
+		break;
+	default:
+		qDebug("Xml::tag: unsupported type %d\n", data.typeId());
+		// abort();
+		break;
+	}
 }
 
 //---------------------------------------------------------
@@ -163,13 +163,13 @@ void Xml::tag(const QString &name, QVariant data)
 
 QString Xml::xmlString(const QString &ss)
 {
-      QString s(ss);
-      s.replace('&', "&amp;");
-      s.replace('<', "&lt;");
-      s.replace('>', "&gt;");
-      s.replace('\'', "&apos;");
-      s.replace('"', "&quot;");
-      return s;
+	QString s(ss);
+	s.replace('&', "&amp;");
+	s.replace('<', "&lt;");
+	s.replace('>', "&gt;");
+	s.replace('\'', "&apos;");
+	s.replace('"', "&quot;");
+	return s;
 }
 
 //---------------------------------------------------------
@@ -178,28 +178,28 @@ QString Xml::xmlString(const QString &ss)
 
 void Xml::dump(int len, const unsigned char *p)
 {
-      putLevel();
-      int col = 0;
-      setFieldWidth(5);
-      setNumberFlags(numberFlags() | QTextStream::ShowBase);
-      setIntegerBase(16);
-      for (int i = 0; i < len; ++i, ++col)
-      {
-            if (col >= 16)
-            {
-                  setFieldWidth(0);
-                  *this << Qt::endl;
-                  col = 0;
-                  putLevel();
-                  setFieldWidth(5);
-            }
-            *this << (p[i] & 0xff);
-      }
-      if (col)
-            *this << Qt::endl
-                  << Qt::dec;
-      setFieldWidth(0);
-      setIntegerBase(10);
+	putLevel();
+	int col = 0;
+	setFieldWidth(5);
+	setNumberFlags(numberFlags() | QTextStream::ShowBase);
+	setIntegerBase(16);
+	for (int i = 0; i < len; ++i, ++col)
+	{
+		if (col >= 16)
+		{
+			setFieldWidth(0);
+			*this << Qt::endl;
+			col = 0;
+			putLevel();
+			setFieldWidth(5);
+		}
+		*this << (p[i] & 0xff);
+	}
+	if (col)
+		*this << Qt::endl
+			  << Qt::dec;
+	setFieldWidth(0);
+	setIntegerBase(10);
 }
 
 //---------------------------------------------------------
@@ -208,18 +208,18 @@ void Xml::dump(int len, const unsigned char *p)
 
 static QString domElementPath(const QDomElement &e)
 {
-      QString s;
-      QDomNode dn(e);
-      while (!dn.parentNode().isNull())
-      {
-            dn = dn.parentNode();
-            const QDomElement &e = dn.toElement();
-            const QString k(e.tagName());
-            if (!s.isEmpty())
-                  s += ":";
-            s += k;
-      }
-      return s;
+	QString s;
+	QDomNode dn(e);
+	while (!dn.parentNode().isNull())
+	{
+		dn = dn.parentNode();
+		const QDomElement &e = dn.toElement();
+		const QString k(e.tagName());
+		if (!s.isEmpty())
+			s += ":";
+		s += k;
+	}
+	return s;
 }
 
 //---------------------------------------------------------
@@ -228,20 +228,20 @@ static QString domElementPath(const QDomElement &e)
 
 void domError(const QDomElement &e)
 {
-      QString m;
-      QString s = domElementPath(e);
-      if (!docName.isEmpty())
-            m = QString("<%1>:").arg(docName);
-      int ln = e.lineNumber();
-      if (ln != -1)
-            m += QString("line:%1 ").arg(ln);
-      int col = e.columnNumber();
-      if (col != -1)
-            m += QString("col:%1 ").arg(col);
-      m += QString("%1: Unknown Node <%2>, type %3").arg(s).arg(e.tagName()).arg(e.nodeType());
-      if (e.isText())
-            m += QString("  text node <%1>").arg(e.toText().data());
-      qDebug("%s", qPrintable(m));
+	QString m;
+	QString s = domElementPath(e);
+	if (!docName.isEmpty())
+		m = QString("<%1>:").arg(docName);
+	int ln = e.lineNumber();
+	if (ln != -1)
+		m += QString("line:%1 ").arg(ln);
+	int col = e.columnNumber();
+	if (col != -1)
+		m += QString("col:%1 ").arg(col);
+	m += QString("%1: Unknown Node <%2>, type %3").arg(s).arg(e.tagName()).arg(e.nodeType());
+	if (e.isText())
+		m += QString("  text node <%1>").arg(e.toText().data());
+	qDebug("%s", qPrintable(m));
 }
 
 //---------------------------------------------------------
@@ -250,13 +250,13 @@ void domError(const QDomElement &e)
 
 void domNotImplemented(const QDomElement &e)
 {
-      QString s = domElementPath(e);
-      if (!docName.isEmpty())
-            qDebug("<%s>:", qPrintable(docName));
-      qDebug("%s: Node not implemented: <%s>, type %d\n",
-             qPrintable(s), qPrintable(e.tagName()), e.nodeType());
-      if (e.isText())
-            qDebug("  text node <%s>\n", qPrintable(e.toText().data()));
+	QString s = domElementPath(e);
+	if (!docName.isEmpty())
+		qDebug("<%s>:", qPrintable(docName));
+	qDebug("%s: Node not implemented: <%s>, type %d\n",
+		   qPrintable(s), qPrintable(e.tagName()), e.nodeType());
+	if (e.isText())
+		qDebug("  text node <%s>\n", qPrintable(e.toText().data()));
 }
 
 //---------------------------------------------------------
@@ -265,10 +265,10 @@ void domNotImplemented(const QDomElement &e)
 
 void Xml::writeHtml(const QString &s)
 {
-      QStringList sl(s.split("\n"));
-      //
-      // remove first line from html (DOCTYPE...)
-      //
-      for (int i = 1; i < sl.size(); ++i)
-            *this << sl[i] << "\n";
+	QStringList sl(s.split("\n"));
+	//
+	// remove first line from html (DOCTYPE...)
+	//
+	for (int i = 1; i < sl.size(); ++i)
+		*this << sl[i] << "\n";
 }

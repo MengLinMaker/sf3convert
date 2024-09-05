@@ -26,36 +26,36 @@
 
 class Xml : public QTextStream
 {
-      static const int BS = 2048;
+	static const int BS = 2048;
 
-      QList<QString> stack;
-      void putLevel();
+	QList<QString> stack;
+	void putLevel();
 
 public:
-      Xml(QIODevice *dev);
-      Xml();
+	Xml(QIODevice *dev);
+	Xml();
 
-      void header();
+	void header();
 
-      void stag(const QString &);
-      void etag();
+	void stag(const QString &);
+	void etag();
 
-      void tagE(const QString &);
-      void tagE(const char *format, ...);
-      void ntag(const char *name);
-      void netag(const char *name);
+	void tagE(const QString &);
+	void tagE(const char *format, ...);
+	void ntag(const char *name);
+	void netag(const char *name);
 
-      void tag(const QString &, QVariant data);
-      void tag(const char *name, const char *s) { tag(name, QVariant(s)); }
-      void tag(const char *name, const QString &s) { tag(name, QVariant(s)); }
-      void tag(const char *name, const QWidget *);
+	void tag(const QString &, QVariant data);
+	void tag(const char *name, const char *s) { tag(name, QVariant(s)); }
+	void tag(const char *name, const QString &s) { tag(name, QVariant(s)); }
+	void tag(const char *name, const QWidget *);
 
-      void writeHtml(const QString &s);
-      void dump(int len, const unsigned char *p);
+	void writeHtml(const QString &s);
+	void dump(int len, const unsigned char *p);
 
-      static QString xmlString(const QString &);
-      static void htmlToString(const QDomElement &, int level, QString *);
-      static QString htmlToString(const QDomElement &);
+	static QString xmlString(const QString &);
+	static void htmlToString(const QDomElement &, int level, QString *);
+	static QString htmlToString(const QDomElement &);
 };
 
 extern QString docName;

@@ -11,7 +11,7 @@
 #  See LICENCE for the licence text and disclaimer of warranty.
 #=============================================================================
 
-CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+cmake_minimum_required(VERSION 3.5)
 project(sf3convert)
 
 # Add source files, targeting C++ 17
@@ -23,6 +23,15 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 # Include Qt library via autosearch
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Xml)
+
+# Include lib files
+target_link_libraries(${PROJECT_NAME}
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::Xml
+)
+
+
 
 # Autosearch lib dependencies
 find_package(PkgConfig REQUIRED)
@@ -38,20 +47,8 @@ pkg_check_modules(OGG REQUIRED IMPORTED_TARGET ogg>=1.3.0)
 
 # Include lib files
 target_link_libraries(${PROJECT_NAME}
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Xml
     ${OGG_LDFLAGS}
     ${VORBIS_LDFLAGS}
     vorbisenc
     ${SNDFILE_LDFLAGS}
-)
-
-
-
-# Create binary with project name
-include(GNUInstallDirs)
-install(TARGETS ${PROJECT_NAME}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

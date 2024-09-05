@@ -11,22 +11,16 @@
 #  See LICENCE for the licence text and disclaimer of warranty.
 #=============================================================================
 
-CPUS = 2
-
 release:
-	if test ! -d build.release; then mkdir build.release; fi; \
-  cd build.release; \
-  cmake -DCMAKE_BUILD_TYPE=RELEASE ..; \
-  make VERBOSE=1 -j ${CPUS}
+	cmake . -DCMAKE_BUILD_TYPE=RELEASE -B build.release -G Ninja;
+	ninja -C build.release
 
 debug:
-	if test ! -d build.debug; then mkdir build.debug; fi; \
-  cd build.debug ; \
-  cmake -DCMAKE_BUILD_TYPE=DEBUG ..; \
-  make VERBOSE=1 -j ${CPUS}
+	cmake . -DCMAKE_BUILD_TYPE=DEBUG -B build.debug -G Ninja;
+	ninja -C build.debug
 
 clean:
-	rm -rf build.debug build.release
+	rm -rf build.debug build.release test/piano.sf3
 
 check:
 	build.release/sf3convert -z test/piano.sf2 test/piano.sf3

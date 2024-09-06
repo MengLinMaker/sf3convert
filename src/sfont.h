@@ -11,9 +11,7 @@
 //  See LICENCE for the licence text and disclaimer of warranty.
 //=============================================================================
 
-#ifndef __SOUNDFONT_H__
-#define __SOUNDFONT_H__
-
+#pragma once
 #include <QtCore/QString>
 #include <QtCore/QList>
 
@@ -290,4 +288,3 @@ public:
 	bool writeCode();
 	void dumpPresets();
 };
-#endif

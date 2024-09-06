@@ -11,9 +11,7 @@
 //  See LICENCE for the licence text and disclaimer of warranty.
 //=============================================================================
 
-#ifndef __XML_H__
-#define __XML_H__
-
+#pragma once
 #include <QtCore/Qt>
 #include <QtWidgets/QtWidgets>
 #include <QtCore/QTextStream>
@@ -61,4 +59,3 @@ public:
 extern QString docName;
 extern void domError(const QDomElement &);
 extern void domNotImplemented(const QDomElement &);
-#endif

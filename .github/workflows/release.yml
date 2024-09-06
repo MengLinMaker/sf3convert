@@ -44,3 +44,6 @@ jobs:
         name: ${{ matrix.os }}
         path: build/Build/sf3convert
         retention-days: 28
+
+    - name: Test conversion
+      run: make check

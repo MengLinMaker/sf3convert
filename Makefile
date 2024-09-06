@@ -11,19 +11,16 @@
 #  See LICENCE for the licence text and disclaimer of warranty.
 #=============================================================================
 
-release:
-	cmake . -DCMAKE_BUILD_TYPE=RELEASE -B build.release -G Ninja;
-	ninja -C build.release
-
-debug:
-	cmake . -DCMAKE_BUILD_TYPE=DEBUG -B build.debug -G Ninja;
-	ninja -C build.debug
+install:
+	conan profile detect; \
+	conan install . --build=missing
 
 clean:
-	rm -rf build.debug build.release test/piano.sf3
+	rm -rf build/Build test/piano.sf3
+
+release:
+	cmake -B build/Build --preset release;
+	ninja -C build/Build
 
 check:
-	build.release/sf3convert -z test/piano.sf2 test/piano.sf3
-
-install:
-	vcpkg install
+	build/Build/sf3convert -z test/piano.sf2 test/piano.sf3

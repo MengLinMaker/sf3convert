@@ -55,6 +55,8 @@ jobs:
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.7.0'
+        # Reduce build time with cache
+        cache: true
 
     - uses: actions/setup-python@v5
       with:

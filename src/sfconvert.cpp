@@ -11,10 +11,7 @@
 //  See LICENCE for the licence text and disclaimer of warranty.
 //=============================================================================
 
-#include <stdio.h>
 #include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
 #include <QtCore/QFile>
 #include <QtCore/QElapsedTimer>
 #include "sfont.h"
@@ -31,7 +28,6 @@ static void usage(const char *pname)
 	fprintf(stderr, "   -z     compress sf\n");
 	fprintf(stderr, "   -q qq  ogg quality\n");
 	fprintf(stderr, "   -a nn  amplification in dB before ogg compression\n");
-	fprintf(stderr, "   -x     xml output\n");
 	fprintf(stderr, "   -c     c output\n");
 	fprintf(stderr, "   -p nn  preset\n");
 	fprintf(stderr, "   -d     dump presets\n");
@@ -45,7 +41,6 @@ static void usage(const char *pname)
 
 int main(int argc, char *argv[])
 {
-	bool xml = false;
 	bool code = false;
 	bool dump = false;
 	bool compress = false;
@@ -64,9 +59,6 @@ int main(int argc, char *argv[])
 	{
 		switch (c)
 		{
-		case 'x':
-			xml = true;
-			break;
 		case 'c':
 			code = true;
 			break;
@@ -100,17 +92,12 @@ int main(int argc, char *argv[])
 
 	argc -= optind;
 	argv += optind;
-	if (xml && (argc != 2))
-	{
-		usage(pname);
-		exit(2);
-	}
 	if ((code && (argc != 1)) || (dump && argc != 1))
 	{
 		usage(pname);
 		exit(3);
 	}
-	if (!xml && !code && !dump && !compress)
+	if (!code && !dump && !compress)
 	{
 		usage(pname);
 		exit(4);
@@ -141,10 +128,7 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "cannot open <%s>\n", argv[2]);
 			exit(2);
 		}
-		if (xml)
-			sf.writeXml(&fo);
-		else
-			sf.write(&fo, oggQuality, oggAmp, oggSerial);
+		sf.write(&fo, oggQuality, oggAmp, oggSerial);
 		fo.close();
 	}
 	qDebug("Soundfont converted in: %d ms", (int)t.elapsed());

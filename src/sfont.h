@@ -12,10 +12,8 @@
 //=============================================================================
 
 #pragma once
-#include <QtCore/QString>
 #include <QtCore/QList>
 
-class Xml;
 class QFile;
 
 //---------------------------------------------------------
@@ -255,7 +253,6 @@ class SoundFont
 	void writeChar(char);
 	void writeShort(short);
 	void write(const char *p, int n);
-	void write(Xml &, Zone *);
 	bool writeSampleFile(Sample *, QString);
 	void writeSample(const Sample *);
 	void writeStringSection(const char *fourcc, char *s);
@@ -282,8 +279,6 @@ public:
 	~SoundFont();
 	bool read();
 	bool write(QFile *, double oggQuality, double oggAmp, qint64 oggSerial);
-	bool readXml(QFile *);
-	bool writeXml(QFile *);
 	bool writeCode(QList<int>);
 	bool writeCode();
 	void dumpPresets();

@@ -28,13 +28,9 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 
 # Include Qt library via autosearch
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets Xml)
-
-# Include lib files
+find_package(Qt6 REQUIRED COMPONENTS Core)
 target_link_libraries(${PROJECT_NAME}
     Qt6::Core
-    Qt6::Widgets
-    Qt6::Xml
 )
 
 

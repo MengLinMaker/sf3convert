@@ -1,8 +1,10 @@
 {
-  "dependencies": [
-    "gtest",
-    "libogg",
-    "libsndfile",
-    "libvorbis"
-  ]
+	"$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+	"builtin-baseline": "110c50d4700794d87d95138cd8c1b3bbfee9bab5",
+	"dependencies": [
+		"gtest",
+		"libogg",
+		"libsndfile",
+		"libvorbis"
+	]
 }

@@ -38,7 +38,8 @@ jobs:
     - name: Build release package
       run: make release
 
-    # - name: Test
-    #   working-directory: ${{ steps.strings.outputs.build-output-dir }}
-    #   run: ctest --build-config ${{ matrix.build_type }}
-
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.os }}
+        path: build/Build/sf3convert
+        retention-days: 28

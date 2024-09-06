@@ -33,22 +33,31 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 
 
+# Detect architecture and os for vcpkg triplet
+if(MSVC)
+    set(OS windows)
+elseif(LINUX)
+    set(OS linux)
+elseif(APPLE)
+    set(OS osx)
+endif()
+message(STATUS ${OS})
+message(STATUS ${CMAKE_SYSTEM_PROCESSOR})
+set(TRIPLET ${CMAKE_SYSTEM_PROCESSOR}-${OS})
+message(STATUS ${TRIPLET})
+
+
+
 # Autosearch lib dependencies
-find_package(PkgConfig REQUIRED)
+find_package(Ogg CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Ogg::ogg)
 
-# libsndfile
-pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile>=1.0.25)
+set(Vorbis_DIR "./vcpkg_installed/${TRIPLET}/share/Vorbis")
+find_package(Vorbis CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Vorbis::vorbis)
+target_link_libraries(${PROJECT_NAME} PRIVATE Vorbis::vorbisfile)
+target_link_libraries(${PROJECT_NAME} PRIVATE Vorbis::vorbisenc)
 
-# libvorbis
-pkg_check_modules(VORBIS REQUIRED IMPORTED_TARGET vorbis>=1.3.3)
+find_package(SndFile CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
 
-# libogg
-pkg_check_modules(OGG REQUIRED IMPORTED_TARGET ogg>=1.3.0)
-
-# Include lib files
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    ${OGG_LDFLAGS}
-    ${VORBIS_LDFLAGS}
-    vorbisenc
-    ${SNDFILE_LDFLAGS}
-)

@@ -1,8 +1,8 @@
 {
   "dependencies": [
+    "gtest",
     "libogg",
     "libsndfile",
-    "libvorbis",
-    "pkgconf"
+    "libvorbis"
   ]
 }

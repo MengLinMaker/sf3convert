@@ -1,6 +1,5 @@
 # Build
-build.release
-build.debug
+build
 
 # Dependency
 vcpkg_installed

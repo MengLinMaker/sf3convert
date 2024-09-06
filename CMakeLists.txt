@@ -25,7 +25,7 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Xml)
 
 # Include lib files
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Widgets
     Qt6::Xml
@@ -46,7 +46,7 @@ pkg_check_modules(VORBIS REQUIRED IMPORTED_TARGET vorbis>=1.3.3)
 pkg_check_modules(OGG REQUIRED IMPORTED_TARGET ogg>=1.3.0)
 
 # Include lib files
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     ${OGG_LDFLAGS}
     ${VORBIS_LDFLAGS}
     vorbisenc

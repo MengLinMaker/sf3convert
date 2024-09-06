@@ -14,6 +14,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(sf3convert)
 
+# Compile to static binary
+set(BUILD_SHARED_LIBS OFF)
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_MFC_FLAG 1)
+
 # Add source files, targeting C++ 17
 file(GLOB MY_SOURCES src/*.cpp)
 add_executable(${PROJECT_NAME} ${MY_SOURCES})
@@ -25,7 +31,7 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Xml)
 
 # Include lib files
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME}
     Qt6::Core
     Qt6::Widgets
     Qt6::Xml
@@ -37,7 +43,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 find_package(SndFile REQUIRED)
 find_package(Vorbis REQUIRED)
 find_package(Ogg REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME}
     SndFile::sndfile
     vorbis::vorbis
     Ogg::ogg

@@ -24,3 +24,6 @@ clean:
 
 check:
 	build.release/sf3convert -z test/piano.sf2 test/piano.sf3
+
+install:
+	vcpkg install

@@ -51,6 +51,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Setup vcpkg c++ package manager
+      uses: lukka/run-vcpkg@v11
+
+    - name: Install dependencies
+      run: make install
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
@@ -77,4 +83,4 @@ jobs:
     # - name: Test
     #   working-directory: ${{ steps.strings.outputs.build-output-dir }}
     #   run: ctest --build-config ${{ matrix.build_type }}
-              
+

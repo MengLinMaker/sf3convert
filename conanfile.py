@@ -7,7 +7,6 @@ class CompressorRecipe(ConanFile):
     generators = "CMakeToolchain", "CMakeDeps"
 
     def build_requirements(self):
-        self.tool_requires("cmake/3.30.1")
         self.tool_requires("ninja/1.12.1")
         self.test_requires("gtest/1.15.0")
         CMakeToolchain(self, generator="Ninja")

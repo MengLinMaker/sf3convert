@@ -51,16 +51,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup vcpkg c++ package manager
-      uses: lukka/run-vcpkg@v11
-
-    - name: Install dependencies
-      run: make install
-
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
         version: '6.7.0'
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: pip install cmake conan && make install
 
     - name: Set reusable strings
       id: strings
@@ -75,6 +75,7 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
+        --preset release
 
     - name: Build
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).

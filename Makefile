@@ -24,3 +24,6 @@ release:
 
 check:
 	build/Build/sf3convert -z test/piano.sf2 test/piano.sf3
+
+compose:
+	docker-compose up --build

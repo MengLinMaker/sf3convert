@@ -1,8 +1,10 @@
-build
-build.qtcreator
+# Build
 build.release
 build.debug
-win32install
-CMakeLists.txt.user
+
+# Dependency
+vcpkg_installed
+
+# Misc
 .vscode
 .DS_Store

@@ -1,16 +1,3 @@
-#=============================================================================
-#  MuseScore sftools
-#
-#  Copyright (C) 2011-2014 Werner Schweer && Meng Lin
-#
-#  This work is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Library General Public
-#  License as published by the Free Software Foundation; either
-#  version 2 of the License, or (at your option) any later version.
-#
-#  See LICENCE for the licence text and disclaimer of warranty.
-#=============================================================================
-
 cmake_minimum_required(VERSION 3.5)
 project(sf3convert)
 

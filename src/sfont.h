@@ -13,8 +13,7 @@
 
 #pragma once
 #include <QtCore/QList>
-
-class QFile;
+#include <QtCore/QFile>
 
 //---------------------------------------------------------
 //   sfVersionTag

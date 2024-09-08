@@ -11,32 +11,18 @@
 //  See LICENCE for the licence text and disclaimer of warranty.
 //=============================================================================
 
+#include "sfont.h"
 #include <sndfile.h>
 #include <vorbis/vorbisenc.h>
 
-#include "sfont.h"
-
-#include <QtCore/QFile>
-
 extern bool smallSf; // create small sf
 
-// #define DEBUG
-
 #define BE_SHORT(x) ((((x) & 0xFF) << 8) | (((x) >> 8) & 0xFF))
-#ifdef __i486__
-#define BE_LONG(x) \
-	({ int __value; \
-        asm ("bswap %1; movl %1,%0" : "=g" (__value) : "r" (x)); \
-       __value; })
-#else
 #define BE_LONG(x) ((((x) & 0xFF) << 24) |    \
 					(((x) & 0xFF00) << 8) |   \
 					(((x) & 0xFF0000) >> 8) | \
 					(((x) >> 24) & 0xFF))
-#endif
-
 #define FOURCC(a, b, c, d) a << 24 | b << 16 | c << 8 | d
-
 #define BLOCK_SIZE 1024
 
 static const bool writeCompressed = true;

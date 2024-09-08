@@ -11,10 +11,8 @@
 //  See LICENCE for the licence text and disclaimer of warranty.
 //=============================================================================
 
-#include <unistd.h>
-#include <QtCore/QFile>
-#include <QtCore/QElapsedTimer>
 #include "sfont.h"
+#include <unistd.h>
 
 bool smallSf = false;
 
@@ -50,8 +48,6 @@ int main(int argc, char *argv[])
 
 	QList<int> presets;
 
-	QElapsedTimer t;
-	t.start();
 	fprintf(stderr, "%s: convert sound file\n", argv[0]);
 
 	int c;
@@ -131,6 +127,5 @@ int main(int argc, char *argv[])
 		sf.write(&fo, oggQuality, oggAmp, oggSerial);
 		fo.close();
 	}
-	qDebug("Soundfont converted in: %d ms", (int)t.elapsed());
 	return 0;
 }

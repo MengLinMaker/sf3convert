@@ -26,7 +26,6 @@ static void usage(const char *pname)
 	fprintf(stderr, "   -z     compress sf\n");
 	fprintf(stderr, "   -q qq  ogg quality\n");
 	fprintf(stderr, "   -a nn  amplification in dB before ogg compression\n");
-	fprintf(stderr, "   -c     c output\n");
 	fprintf(stderr, "   -p nn  preset\n");
 	fprintf(stderr, "   -d     dump presets\n");
 	fprintf(stderr, "   -s     create small sf (one instrument/preset), pan to 0\n");
@@ -39,7 +38,6 @@ static void usage(const char *pname)
 
 int main(int argc, char *argv[])
 {
-	bool code = false;
 	bool dump = false;
 	bool compress = false;
 	double oggQuality = 0.3;
@@ -55,9 +53,6 @@ int main(int argc, char *argv[])
 	{
 		switch (c)
 		{
-		case 'c':
-			code = true;
-			break;
 		case 'p':
 			presets.append(atoi(optarg));
 			break;
@@ -88,12 +83,7 @@ int main(int argc, char *argv[])
 
 	argc -= optind;
 	argv += optind;
-	if ((code && (argc != 1)) || (dump && argc != 1))
-	{
-		usage(pname);
-		exit(3);
-	}
-	if (!code && !dump && !compress)
+	if (!dump && !compress)
 	{
 		usage(pname);
 		exit(4);
@@ -105,14 +95,6 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "sf read error\n");
 		exit(3);
-	}
-
-	if (code)
-	{
-		if (presets.isEmpty())
-			sf.writeCode();
-		else
-			sf.writeCode(presets);
 	}
 	else if (dump)
 		sf.dumpPresets();

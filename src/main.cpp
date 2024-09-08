@@ -1,4 +1,4 @@
-#include "sfont.h"
+#include "sfont/sfont.h"
 #include <unistd.h>
 
 static void cliUsage(const char *pname)

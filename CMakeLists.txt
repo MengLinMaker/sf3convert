@@ -8,7 +8,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_MFC_FLAG 1)
 
 # Add source files, targeting C++ 17
-file(GLOB MY_SOURCES src/*.cpp)
+file(GLOB_RECURSE MY_SOURCES src/*.cpp)
 add_executable(${PROJECT_NAME} ${MY_SOURCES})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 

@@ -22,14 +22,13 @@ bool smallSf = false;
 
 static void usage(const char *pname)
 {
-	fprintf(stderr, "usage: %s [-flags] soundfont [outfile]\n", pname);
+	fprintf(stderr, "\nusage: %s [-flags] soundfont [outfile]\n", pname);
 	fprintf(stderr, "   -z     compress sf\n");
 	fprintf(stderr, "   -q qq  ogg quality\n");
 	fprintf(stderr, "   -a nn  amplification in dB before ogg compression\n");
 	fprintf(stderr, "   -p nn  preset\n");
 	fprintf(stderr, "   -d     dump presets\n");
-	fprintf(stderr, "   -s     create small sf (one instrument/preset), pan to 0\n");
-	fprintf(stderr, "   -S nn  ogg serial number\n");
+	fprintf(stderr, "   -s     create small sf (one instrument/preset), pan to 0\n\n");
 }
 
 //---------------------------------------------------------
@@ -42,7 +41,6 @@ int main(int argc, char *argv[])
 	bool compress = false;
 	double oggQuality = 0.3;
 	double oggAmp = -1.0;
-	qint64 oggSerial = std::numeric_limits<qint64>::max();
 
 	QList<int> presets;
 
@@ -58,9 +56,6 @@ int main(int argc, char *argv[])
 			break;
 		case 'd':
 			dump = true;
-			break;
-		case 'S':
-			oggSerial = atoi(optarg);
 			break;
 		case 's':
 			smallSf = true;
@@ -106,7 +101,7 @@ int main(int argc, char *argv[])
 			fprintf(stderr, "cannot open <%s>\n", argv[2]);
 			exit(2);
 		}
-		sf.write(&fo, oggQuality, oggAmp, oggSerial);
+		sf.write(&fo, oggQuality, oggAmp);
 		fo.close();
 	}
 	return 0;

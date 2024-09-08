@@ -623,12 +623,11 @@ static const char *generatorNames[] = {
 //   write
 //---------------------------------------------------------
 
-bool SoundFont::write(QFile *f, double oggQuality, double oggAmp, qint64 oggSerial)
+bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 {
 	file = f;
 	_oggQuality = oggQuality;
 	_oggAmp = oggAmp;
-	_oggSerial = oggSerial;
 	qint64 riffLenPos;
 	qint64 listLenPos;
 	try
@@ -1094,8 +1093,10 @@ int SoundFont::writeCompressedSample(Sample *s)
 	vorbis_comment_init(&vc);
 	vorbis_analysis_init(&vd, &vi);
 	vorbis_block_init(&vd, &vb);
+
 	srand(time(NULL));
-	ogg_stream_init(&os, _oggSerial == std::numeric_limits<qint64>::max() ? rand() : (int)_oggSerial);
+	const int oggSerial = rand();
+	ogg_stream_init(&os, oggSerial);
 
 	ogg_packet header;
 	ogg_packet header_comm;

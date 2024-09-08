@@ -23,7 +23,7 @@ release:
 	ninja -C build/Build
 
 check:
-	build/Build/sf3convert -z -q 0 test/sample.sf2 test/sample.sf3
+	build/Build/sf3convert test/sample.sf2 test/sample.sf3
 
 compose:
 	docker-compose up --build

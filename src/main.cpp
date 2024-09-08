@@ -21,7 +21,7 @@
 static void usage(const char *pname)
 {
 	fprintf(stderr, "\nusage: %s [-flags] soundfont [outfile]\n", pname);
-	fprintf(stderr, "   -z     compress sf\n");
+	fprintf(stderr, "   -h     help\n");
 	fprintf(stderr, "   -q qq  ogg quality\n");
 	fprintf(stderr, "   -a nn  amplification in dB before ogg compression\n");
 	fprintf(stderr, "   -d     dump presets\n");
@@ -35,9 +35,8 @@ static void usage(const char *pname)
 int main(int argc, char *argv[])
 {
 	bool dump = false;
-	bool compress = false;
-	double oggQuality = 0.3;
-	double oggAmp = -1.0;
+	double oggQuality = 0;
+	double oggAmp = 0;
 
 	QList<int> presets;
 
@@ -48,11 +47,8 @@ int main(int argc, char *argv[])
 	{
 		switch (c)
 		{
-		case 'd':
-			dump = true;
-			break;
-		case 'z':
-			compress = true;
+		case 'h':
+			usage(argv[0]);
 			break;
 		case 'q':
 			oggQuality = atof(optarg);
@@ -60,20 +56,17 @@ int main(int argc, char *argv[])
 		case 'a':
 			oggAmp = atof(optarg);
 			break;
+		case 'd':
+			dump = true;
+			break;
 		default:
-			usage(argv[0]);
-			exit(1);
+			break;
 		}
 	}
 	const char *pname = argv[0];
 
 	argc -= optind;
 	argv += optind;
-	if (!dump && !compress)
-	{
-		usage(pname);
-		exit(4);
-	}
 
 	SoundFont sf(argv[0]);
 
@@ -84,7 +77,7 @@ int main(int argc, char *argv[])
 	}
 	else if (dump)
 		sf.dumpPresets();
-	else if (compress)
+	else
 	{
 		QFile fo(argv[1]);
 		if (!fo.open(QIODevice::WriteOnly))

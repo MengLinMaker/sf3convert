@@ -4,6 +4,9 @@ build
 # Dependency
 vcpkg_installed
 
+# Doc
+doc
+
 # Misc
 .vscode
 .DS_Store

@@ -25,5 +25,8 @@ release:
 check:
 	build/Build/sf3convert test/sample.sf2 test/sample.sf3
 
+doc:
+	doxygen
+
 compose:
 	docker-compose up --build

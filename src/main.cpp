@@ -14,8 +14,6 @@
 #include "sfont.h"
 #include <unistd.h>
 
-bool smallSf = false;
-
 //---------------------------------------------------------
 //   usage
 //---------------------------------------------------------
@@ -26,9 +24,7 @@ static void usage(const char *pname)
 	fprintf(stderr, "   -z     compress sf\n");
 	fprintf(stderr, "   -q qq  ogg quality\n");
 	fprintf(stderr, "   -a nn  amplification in dB before ogg compression\n");
-	fprintf(stderr, "   -p nn  preset\n");
 	fprintf(stderr, "   -d     dump presets\n");
-	fprintf(stderr, "   -s     create small sf (one instrument/preset), pan to 0\n\n");
 }
 
 //---------------------------------------------------------
@@ -51,14 +47,8 @@ int main(int argc, char *argv[])
 	{
 		switch (c)
 		{
-		case 'p':
-			presets.append(atoi(optarg));
-			break;
 		case 'd':
 			dump = true;
-			break;
-		case 's':
-			smallSf = true;
 			break;
 		case 'z':
 			compress = true;

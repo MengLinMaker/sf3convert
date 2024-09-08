@@ -15,8 +15,6 @@
 #include <sndfile.h>
 #include <vorbis/vorbisenc.h>
 
-extern bool smallSf; // create small sf
-
 #define BE_SHORT(x) ((((x) & 0xFF) << 8) | (((x) >> 8) & 0xFF))
 #define BE_LONG(x) ((((x) & 0xFF) << 24) |    \
 					(((x) & 0xFF00) << 8) |   \
@@ -1385,8 +1383,6 @@ bool SoundFont::writeCode()
 		QList<int> sampleIdx;
 		for (int idx = i * n; idx < end; ++idx)
 		{
-			if (smallSf && !checkSample(presets, instruments, idx))
-				continue;
 			Sample *s = samples[idx];
 			writeCSample(s, idx);
 			sampleIdx.append(idx);
@@ -1437,11 +1433,6 @@ bool SoundFont::writeCode()
 	int idx = 0;
 	foreach (Instrument *instrument, instruments)
 	{
-		if (smallSf && !checkInstrument(presets, idx))
-		{
-			++idx;
-			continue;
-		}
 		int zones = instrument->zones.size();
 		idx2 = 0;
 		foreach (Zone *z, instrument->zones)
@@ -1470,8 +1461,6 @@ bool SoundFont::writeCode()
 					sampleIdx = g->amount.uword;
 				else
 					gl.append(g);
-				if (smallSf && g->gen == Gen_Pan)
-					g->amount.uword = 0;
 			}
 			int idx3 = 0;
 			foreach (GeneratorList *g, gl)
@@ -1535,9 +1524,6 @@ bool SoundFont::writeCode()
 	{
 		idx2 = 0;
 		int zones = p->zones.size();
-		if (smallSf)
-			zones = 1;
-
 		foreach (Zone *z, p->zones)
 		{
 			int keyLo = 0;
@@ -1571,15 +1557,11 @@ bool SoundFont::writeCode()
 			}
 			else
 			{
-				// abort();
-
 				if (instrIdx == -1)
 					fprintf(f, "static PZone pz%d_%d(%d, %d, %d, %d, 0);\n", idx, idx2, keyLo, keyHi, veloLo, veloHi);
 				else
 					fprintf(f, "static PZone pz%d_%d(%d, %d, %d, %d, &instr%d);\n", idx, idx2, keyLo, keyHi, veloLo, veloHi, instrIdx);
 			}
-			if (smallSf)
-				break;
 			++idx2;
 		}
 		fprintf(f, "static PZone* pzones%d[%d] = {\n", idx, zones);

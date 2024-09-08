@@ -14,10 +14,6 @@
 #include "sfont.h"
 #include <unistd.h>
 
-//---------------------------------------------------------
-//   usage
-//---------------------------------------------------------
-
 static void usage(const char *pname)
 {
 	fprintf(stderr, "\nusage: %s [-flags] soundfont [outfile]\n", pname);
@@ -28,24 +24,15 @@ static void usage(const char *pname)
 	fprintf(stderr, "\n");
 }
 
-//---------------------------------------------------------
-//   main
-//---------------------------------------------------------
-
 int main(int argc, char *argv[])
 {
-	bool dump = false;
 	double oggQuality = 0;
 	double oggAmp = 0;
-
-	QList<int> presets;
-
-	fprintf(stderr, "%s: convert sound file\n", argv[0]);
-
-	int c;
-	while ((c = getopt(argc, argv, "xcp:dS:szq:a:")) != EOF)
+	bool dump = false;
+	int flag;
+	while ((flag = getopt(argc, argv, "xcp:dS:szq:a:")) != EOF)
 	{
-		switch (c)
+		switch (flag)
 		{
 		case 'h':
 			usage(argv[0]);
@@ -63,13 +50,9 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
-	const char *pname = argv[0];
 
-	argc -= optind;
-	argv += optind;
-
-	SoundFont sf(argv[0]);
-
+	const char *soundFontPath = argv[1];
+	SoundFont sf(soundFontPath);
 	if (!sf.read())
 	{
 		fprintf(stderr, "sf read error\n");
@@ -79,7 +62,7 @@ int main(int argc, char *argv[])
 		sf.dumpPresets();
 	else
 	{
-		QFile fo(argv[1]);
+		QFile fo(argv[2]);
 		if (!fo.open(QIODevice::WriteOnly))
 		{
 			fprintf(stderr, "cannot open <%s>\n", argv[2]);

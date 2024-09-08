@@ -25,6 +25,7 @@ static void usage(const char *pname)
 	fprintf(stderr, "   -q qq  ogg quality\n");
 	fprintf(stderr, "   -a nn  amplification in dB before ogg compression\n");
 	fprintf(stderr, "   -d     dump presets\n");
+	fprintf(stderr, "\n");
 }
 
 //---------------------------------------------------------

@@ -19,12 +19,11 @@ clean:
 	rm -rf build/Build test/piano.sf3
 
 release:
-	cmake -B build/Build --preset release;
+	cmake -B build/Build --preset release
 	ninja -C build/Build
 
 check:
-	release; \
-	build/Build/sf3convert -z test/piano.sf2 test/piano.sf3
+	build/Build/sf3convert -z -q 0 test/piano.sf2 test/piano.sf3
 
 compose:
 	docker-compose up --build

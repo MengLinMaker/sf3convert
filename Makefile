@@ -23,6 +23,7 @@ release:
 	ninja -C build/Build
 
 check:
+	release; \
 	build/Build/sf3convert -z test/piano.sf2 test/piano.sf3
 
 compose:

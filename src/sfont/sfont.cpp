@@ -123,7 +123,7 @@ bool SoundFont::read()
 
 void SoundFont::skip(int n)
 {
-	qint64 pos = file->pos();
+	int pos = file->pos();
 	if (!file->seek(pos + n))
 		throw(std::string("unexpected end of file\n"));
 }
@@ -614,8 +614,8 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 	file = f;
 	_oggQuality = oggQuality;
 	_oggAmp = oggAmp;
-	qint64 riffLenPos;
-	qint64 listLenPos;
+	int riffLenPos;
+	int listLenPos;
 	try
 	{
 		file->write("RIFF", 4);
@@ -646,7 +646,7 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 		if (copyright)
 			writeStringSection("ICOP", copyright);
 
-		qint64 pos = file->pos();
+		int pos = file->pos();
 		file->seek(listLenPos);
 		writeDword(pos - listLenPos - 4);
 		file->seek(pos);
@@ -681,7 +681,7 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 		writeDword(pos - listLenPos - 4);
 		file->seek(pos);
 
-		qint64 endPos = file->pos();
+		int endPos = file->pos();
 		file->seek(riffLenPos);
 		writeDword(endPos - riffLenPos - 4);
 	}
@@ -747,7 +747,7 @@ void SoundFont::writeSmpl()
 {
 	write("smpl", 4);
 
-	qint64 pos = file->pos();
+	int pos = file->pos();
 	writeDword(0);
 	int sampleLen = 0;
 	if (writeCompressed)
@@ -783,7 +783,7 @@ void SoundFont::writeSmpl()
 		f.close();
 		delete[] buffer;
 	}
-	qint64 npos = file->pos();
+	int npos = file->pos();
 	file->seek(pos);
 	writeDword(npos - pos - 4);
 	file->seek(npos);

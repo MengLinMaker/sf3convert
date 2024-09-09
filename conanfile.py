@@ -1,9 +1,14 @@
 from conan import ConanFile
-from conan.tools.cmake import CMakeToolchain, cmake_layout
+from conan.tools.cmake import cmake_layout
 
 
 class CompressorRecipe(ConanFile):
-    settings = "os", "compiler", "build_type", "arch"
+    settings = {
+        "os",
+        "compiler",
+        "arch",
+        "build_type",
+    }
     generators = "CMakeToolchain", "CMakeDeps"
 
     def build_requirements(self):

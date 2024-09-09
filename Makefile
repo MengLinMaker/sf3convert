@@ -13,7 +13,7 @@
 
 install:
 	conan profile detect; \
-	conan install . --build=missing
+	conan install . --build=missing -s compiler.cppstd=23
 
 clean:
 	rm -rf build/Build test/piano.sf3

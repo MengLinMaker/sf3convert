@@ -437,7 +437,7 @@ void SoundFont::readPhdr(int len)
 //   readBag
 //---------------------------------------------------------
 
-void SoundFont::readBag(int len, QList<Zone *> *zones)
+void SoundFont::readBag(int len, QVector<Zone *> *zones)
 {
 	if (len % 4)
 		throw(std::string("bag size not a multiple of 4"));
@@ -471,7 +471,7 @@ void SoundFont::readBag(int len, QList<Zone *> *zones)
 //   readMod
 //---------------------------------------------------------
 
-void SoundFont::readMod(int size, QList<Zone *> *zones)
+void SoundFont::readMod(int size, QVector<Zone *> *zones)
 {
 	foreach (Zone *zone, *zones)
 	{
@@ -496,7 +496,7 @@ void SoundFont::readMod(int size, QList<Zone *> *zones)
 //   readGen
 //---------------------------------------------------------
 
-void SoundFont::readGen(int size, QList<Zone *> *zones)
+void SoundFont::readGen(int size, QVector<Zone *> *zones)
 {
 	if (size % 4)
 		throw(std::string("bad generator list size"));
@@ -832,7 +832,7 @@ void SoundFont::writePreset(int zoneIdx, const Preset *preset)
 //   writeBag
 //---------------------------------------------------------
 
-void SoundFont::writeBag(const char *fourcc, QList<Zone *> *zones)
+void SoundFont::writeBag(const char *fourcc, QVector<Zone *> *zones)
 {
 	write(fourcc, 4);
 	int n = zones->size();
@@ -854,7 +854,7 @@ void SoundFont::writeBag(const char *fourcc, QList<Zone *> *zones)
 //   writeMod
 //---------------------------------------------------------
 
-void SoundFont::writeMod(const char *fourcc, const QList<Zone *> *zones)
+void SoundFont::writeMod(const char *fourcc, const QVector<Zone *> *zones)
 {
 	write(fourcc, 4);
 	int n = 0;
@@ -889,7 +889,7 @@ void SoundFont::writeModulator(const ModulatorList *m)
 //   writeGen
 //---------------------------------------------------------
 
-void SoundFont::writeGen(const char *fourcc, QList<Zone *> *zones)
+void SoundFont::writeGen(const char *fourcc, QVector<Zone *> *zones)
 {
 	write(fourcc, 4);
 	int n = 0;
@@ -1238,7 +1238,7 @@ bool SoundFont::writeCSample(Sample *s, int idx)
 //   checkInstrument
 //---------------------------------------------------------
 
-static bool checkInstrument(QList<int> pnums, QList<Preset *> presets, int instrIdx)
+static bool checkInstrument(QVector<int> pnums, QVector<Preset *> presets, int instrIdx)
 {
 	foreach (int idx, pnums)
 	{
@@ -1258,7 +1258,7 @@ static bool checkInstrument(QList<int> pnums, QList<Preset *> presets, int instr
 	return false;
 }
 
-static bool checkInstrument(QList<Preset *> presets, int instrIdx)
+static bool checkInstrument(QVector<Preset *> presets, int instrIdx)
 {
 	bool result = false;
 	for (int i = 0; i < presets.size(); i++)
@@ -1281,7 +1281,7 @@ static bool checkInstrument(QList<Preset *> presets, int instrIdx)
 //   checkSample
 //---------------------------------------------------------
 
-static bool checkSample(QList<int> pnums, QList<Preset *> presets, QList<Instrument *> instruments,
+static bool checkSample(QVector<int> pnums, QVector<Preset *> presets, QVector<Instrument *> instruments,
 						int sampleIdx)
 {
 	int idx = 0;
@@ -1295,7 +1295,7 @@ static bool checkSample(QList<int> pnums, QList<Preset *> presets, QList<Instrum
 		int zones = instrument->zones.size();
 		foreach (Zone *z, instrument->zones)
 		{
-			QList<GeneratorList *> gl;
+			QVector<GeneratorList *> gl;
 			foreach (GeneratorList *g, z->generators)
 			{
 				if (g->gen == Gen_SampleId)
@@ -1314,7 +1314,7 @@ static bool checkSample(QList<int> pnums, QList<Preset *> presets, QList<Instrum
 //   checkSample
 //---------------------------------------------------------
 
-static bool checkSample(QList<Preset *> presets, QList<Instrument *> instruments,
+static bool checkSample(QVector<Preset *> presets, QVector<Instrument *> instruments,
 						int sampleIdx)
 {
 	int idx = 0;
@@ -1328,7 +1328,7 @@ static bool checkSample(QList<Preset *> presets, QList<Instrument *> instruments
 		int zones = instrument->zones.size();
 		foreach (Zone *z, instrument->zones)
 		{
-			QList<GeneratorList *> gl;
+			QVector<GeneratorList *> gl;
 			foreach (GeneratorList *g, z->generators)
 			{
 				if (g->gen == Gen_SampleId)
@@ -1368,7 +1368,7 @@ bool SoundFont::writeCode()
 			end = samples.size();
 		else
 			end = (i + 1) * n;
-		QList<int> sampleIdx;
+		QVector<int> sampleIdx;
 		for (int idx = i * n; idx < end; ++idx)
 		{
 			Sample *s = samples[idx];
@@ -1431,7 +1431,7 @@ bool SoundFont::writeCode()
 			int veloHi = 127;
 			int sampleIdx = -1;
 
-			QList<GeneratorList *> gl;
+			QVector<GeneratorList *> gl;
 			foreach (GeneratorList *g, z->generators)
 			{
 				const char *name = generatorNames[g->gen];
@@ -1582,7 +1582,7 @@ bool SoundFont::writeCode()
 //   writeCode
 //---------------------------------------------------------
 
-bool SoundFont::writeCode(QList<int> pnums)
+bool SoundFont::writeCode(QVector<int> pnums)
 {
 	printf("write code\n");
 
@@ -1595,7 +1595,7 @@ bool SoundFont::writeCode(QList<int> pnums)
 	//
 	// dump wave samples
 	//
-	QList<int> sampleIdx;
+	QVector<int> sampleIdx;
 	for (int idx = 0; idx < n; ++idx)
 	{
 		if (!checkSample(pnums, presets, instruments, idx))
@@ -1644,7 +1644,7 @@ bool SoundFont::writeCode(QList<int> pnums)
 			int veloHi = 127;
 			int sampleIdx = -1;
 
-			QList<GeneratorList *> gl;
+			QVector<GeneratorList *> gl;
 
 			foreach (GeneratorList *g, z->generators)
 			{

@@ -1,5 +1,5 @@
 #pragma once
-#include <QtCore/QList>
+#include <QtCore/QVector>
 #include <QtCore/QFile>
 
 //---------------------------------------------------------
@@ -123,8 +123,8 @@ struct GeneratorList
 
 struct Zone
 {
-	QList<GeneratorList *> generators;
-	QList<ModulatorList *> modulators;
+	QVector<GeneratorList *> generators;
+	QVector<ModulatorList *> modulators;
 	int instrumentIndex;
 };
 
@@ -141,7 +141,7 @@ struct Preset
 	int library{0};
 	int genre{0};
 	int morphology{0};
-	QList<Zone *> zones;
+	QVector<Zone *> zones;
 };
 
 //---------------------------------------------------------
@@ -152,7 +152,7 @@ struct Instrument
 {
 	char *name;
 	int index; // used only for read
-	QList<Zone *> zones;
+	QVector<Zone *> zones;
 
 	Instrument();
 	~Instrument();
@@ -199,12 +199,12 @@ class SoundFont
 	int samplePos;
 	int sampleLen;
 
-	QList<Preset *> presets;
-	QList<Instrument *> instruments;
+	QVector<Preset *> presets;
+	QVector<Instrument *> instruments;
 
-	QList<Zone *> pZones;
-	QList<Zone *> iZones;
-	QList<Sample *> samples;
+	QVector<Zone *> pZones;
+	QVector<Zone *> iZones;
+	QVector<Sample *> samples;
 
 	QFile *file;
 	FILE *f;
@@ -226,9 +226,9 @@ class SoundFont
 	void readVersion();
 	char *readString(int);
 	void readPhdr(int);
-	void readBag(int, QList<Zone *> *);
-	void readMod(int, QList<Zone *> *);
-	void readGen(int, QList<Zone *> *);
+	void readBag(int, QVector<Zone *> *);
+	void readMod(int, QVector<Zone *> *);
+	void readGen(int, QVector<Zone *> *);
 	void readInst(int);
 	void readShdr(int);
 
@@ -249,9 +249,9 @@ class SoundFont
 	void writeIfil();
 	void writeSmpl();
 	void writePhdr();
-	void writeBag(const char *fourcc, QList<Zone *> *);
-	void writeMod(const char *fourcc, const QList<Zone *> *);
-	void writeGen(const char *fourcc, QList<Zone *> *);
+	void writeBag(const char *fourcc, QVector<Zone *> *);
+	void writeMod(const char *fourcc, const QVector<Zone *> *);
+	void writeGen(const char *fourcc, QVector<Zone *> *);
 	void writeInst();
 	void writeShdr();
 
@@ -264,7 +264,7 @@ public:
 	~SoundFont();
 	bool read();
 	bool write(QFile *, double oggQuality, double oggAmp);
-	bool writeCode(QList<int>);
+	bool writeCode(QVector<int>);
 	bool writeCode();
 	void dumpPresets();
 };

@@ -185,7 +185,7 @@ struct Sample
 
 class SoundFont
 {
-	QString path;
+	std::string path;
 	sfVersionTag version;
 	char *engine;
 	char *name;
@@ -238,7 +238,7 @@ class SoundFont
 	void writeChar(char);
 	void writeShort(short);
 	void write(const char *p, int n);
-	bool writeSampleFile(Sample *, QString);
+	bool writeSampleFile(Sample *, std::string);
 	void writeSample(const Sample *);
 	void writeStringSection(const char *fourcc, char *s);
 	void writePreset(int zoneIdx, const Preset *);
@@ -260,7 +260,7 @@ class SoundFont
 	char *readCompressedSample(Sample *);
 
 public:
-	SoundFont(const QString &);
+	SoundFont(const std::string &);
 	~SoundFont();
 	bool read();
 	bool write(QFile *, double oggQuality, double oggAmp);

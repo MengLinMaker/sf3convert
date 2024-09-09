@@ -1,6 +1,7 @@
 #include "sfont.h"
 #include <sndfile.h>
 #include <vorbis/vorbisenc.h>
+#include <format>
 
 #define BE_SHORT(x) ((((x) & 0xFF) << 8) | (((x) >> 8) & 0xFF))
 #define BE_LONG(x) ((((x) & 0xFF) << 24) |    \
@@ -44,7 +45,7 @@ Instrument::~Instrument()
 //   SoundFont
 //---------------------------------------------------------
 
-SoundFont::SoundFont(const QString &s)
+SoundFont::SoundFont(const std::string &s)
 {
 	path = s;
 	engine = 0;
@@ -75,10 +76,10 @@ SoundFont::~SoundFont()
 
 bool SoundFont::read()
 {
-	file = new QFile(path);
+	file = new QFile(QString::fromStdString(path));
 	if (!file->open(QIODevice::ReadOnly))
 	{
-		fprintf(stderr, "cannot open <%s>\n", qPrintable(path));
+		fprintf(stderr, "cannot open <%s>\n", path.c_str());
 		delete file;
 		return false;
 	}
@@ -106,9 +107,9 @@ bool SoundFont::read()
 			}
 		}
 	}
-	catch (QString s)
+	catch (std::string s)
 	{
-		printf("read sf file failed: %s\n", qPrintable(s));
+		printf("read sf file failed: %s\n", s.c_str());
 		delete file;
 		return false;
 	}
@@ -124,7 +125,7 @@ void SoundFont::skip(int n)
 {
 	qint64 pos = file->pos();
 	if (!file->seek(pos + n))
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 }
 
 //---------------------------------------------------------
@@ -152,13 +153,13 @@ void SoundFont::readSignature(const char *signature)
 	char fourcc[4];
 	readSignature(fourcc);
 	if (memcmp(fourcc, signature, 4) != 0)
-		throw(QString("fourcc <%1> expected").arg(signature));
+		throw(std::format("fourcc <%s> expected", signature));
 }
 
 void SoundFont::readSignature(char *signature)
 {
 	if (file->read(signature, 4) != 4)
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 }
 
 //---------------------------------------------------------
@@ -169,7 +170,7 @@ unsigned SoundFont::readDword()
 {
 	unsigned format;
 	if (file->read((char *)&format, 4) != 4)
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
 		return BE_LONG(format);
 	else
@@ -235,7 +236,7 @@ int SoundFont::readWord()
 {
 	unsigned short format;
 	if (file->read((char *)&format, 2) != 2)
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
 		return BE_SHORT(format);
 	else
@@ -250,7 +251,7 @@ int SoundFont::readShort()
 {
 	short format;
 	if (file->read((char *)&format, 2) != 2)
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
 		return BE_SHORT(format);
 	else
@@ -265,7 +266,7 @@ int SoundFont::readByte()
 {
 	uchar val;
 	if (file->read((char *)&val, 1) != 1)
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 	return val;
 }
 
@@ -277,7 +278,7 @@ int SoundFont::readChar()
 {
 	char val;
 	if (file->read(&val, 1) != 1)
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 	return val;
 }
 
@@ -289,7 +290,7 @@ void SoundFont::readVersion()
 {
 	unsigned char data[4];
 	if (file->read((char *)data, 4) != 4)
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 	version.major = data[0] + (data[1] << 8);
 	version.minor = data[2] + (data[3] << 8);
 }
@@ -302,7 +303,7 @@ char *SoundFont::readString(int n)
 {
 	char data[2500];
 	if (file->read((char *)data, n) != n)
-		throw(QString("unexpected end of file\n"));
+		throw(std::string("unexpected end of file\n"));
 	if (data[n - 1] != 0)
 		data[n] = 0;
 	return strdup(data);
@@ -381,7 +382,7 @@ void SoundFont::readSection(const char *fourcc, int len)
 	case FOURCC('i', 'v', 'e', 'r'): // sample rom version
 	default:
 		skip(len);
-		throw(QString("unknown fourcc <%1>").arg(fourcc));
+		throw(std::format("unknown fourcc <%s>", fourcc));
 		break;
 	}
 }
@@ -393,9 +394,9 @@ void SoundFont::readSection(const char *fourcc, int len)
 void SoundFont::readPhdr(int len)
 {
 	if (len < (38 * 2))
-		throw(QString("phdr too short"));
+		throw(std::string("phdr too short"));
 	if (len % 38)
-		throw(QString("phdr not a multiple of 38"));
+		throw(std::string("phdr not a multiple of 38"));
 	int n = len / 38;
 	if (n <= 1)
 	{
@@ -439,7 +440,7 @@ void SoundFont::readPhdr(int len)
 void SoundFont::readBag(int len, QList<Zone *> *zones)
 {
 	if (len % 4)
-		throw(QString("bag size not a multiple of 4"));
+		throw(std::string("bag size not a multiple of 4"));
 	int gIndex2, mIndex2;
 	int gIndex1 = readWord();
 	int mIndex1 = readWord();
@@ -450,7 +451,7 @@ void SoundFont::readBag(int len, QList<Zone *> *zones)
 		mIndex2 = readWord();
 		len -= 4;
 		if (len < 0)
-			throw(QString("bag size too small"));
+			throw(std::string("bag size too small"));
 		if (gIndex2 < gIndex1)
 			throw("generator indices not monotonic");
 		if (mIndex2 < mIndex1)
@@ -478,7 +479,7 @@ void SoundFont::readMod(int size, QList<Zone *> *zones)
 		{
 			size -= 10;
 			if (size < 0)
-				throw(QString("pmod size mismatch"));
+				throw(std::string("pmod size mismatch"));
 			m->src = static_cast<Modulator>(readWord());
 			m->dst = static_cast<Generator>(readWord());
 			m->amount = readShort();
@@ -487,7 +488,7 @@ void SoundFont::readMod(int size, QList<Zone *> *zones)
 		}
 	}
 	if (size != 10)
-		throw(QString("modulator list size mismatch"));
+		throw(std::string("modulator list size mismatch"));
 	skip(10);
 }
 
@@ -498,7 +499,7 @@ void SoundFont::readMod(int size, QList<Zone *> *zones)
 void SoundFont::readGen(int size, QList<Zone *> *zones)
 {
 	if (size % 4)
-		throw(QString("bad generator list size"));
+		throw(std::string("bad generator list size"));
 	foreach (Zone *zone, *zones)
 	{
 		size -= (zone->generators.size() * 4);
@@ -520,7 +521,7 @@ void SoundFont::readGen(int size, QList<Zone *> *zones)
 		}
 	}
 	if (size != 4)
-		throw(QString("generator list size mismatch %1 != 4").arg(size));
+		throw(std::format("generator list size mismatch %s != 4", size));
 	skip(size);
 }
 
@@ -684,9 +685,9 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 		file->seek(riffLenPos);
 		writeDword(endPos - riffLenPos - 4);
 	}
-	catch (QString s)
+	catch (std::string s)
 	{
-		printf("write sf file failed: %s\n", qPrintable(s));
+		printf("write sf file failed: %s\n", s.c_str());
 		return false;
 	}
 	return true;
@@ -699,7 +700,7 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 void SoundFont::write(const char *p, int n)
 {
 	if (file->write(p, n) != n)
-		throw(QString("write error"));
+		throw(std::string("write error"));
 }
 
 //---------------------------------------------------------
@@ -763,9 +764,9 @@ void SoundFont::writeSmpl()
 	else
 	{
 		char *buffer = new char[sampleLen];
-		QFile f(path);
+		QFile f(QString::fromStdString(path));
 		if (!f.open(QIODevice::ReadOnly))
-			throw(QString("cannot open <%1>").arg(f.fileName()));
+			throw(std::format("cannot open <%s>", qPrintable(f.fileName())));
 		foreach (Sample *s, samples)
 		{
 			f.seek(samplePos + s->start * sizeof(short));
@@ -999,11 +1000,11 @@ void SoundFont::writeSample(const Sample *s)
 //   writeSampleFile
 //---------------------------------------------------------
 
-bool SoundFont::writeSampleFile(Sample *s, QString name)
+bool SoundFont::writeSampleFile(Sample *s, std::string name)
 {
-	QString path = "waves/" + name + ".ogg";
+	std::string path = "waves/" + name + ".ogg";
 
-	QFile f(path);
+	QFile f(QString::fromStdString(path));
 	if (!f.open(QIODevice::ReadOnly))
 	{
 		fprintf(stderr, "cannot open <%s>\n", qPrintable(f.fileName()));
@@ -1024,11 +1025,11 @@ bool SoundFont::writeSampleFile(Sample *s, QString name)
 	info.samplerate = s->samplerate;
 	info.format = format;
 
-	SNDFILE *sf = sf_open(qPrintable(path), SFM_WRITE, &info);
+	SNDFILE *sf = sf_open(path.c_str(), SFM_WRITE, &info);
 	if (sf == 0)
 	{
 		fprintf(stderr, "open soundfile <%s> failed: %s\n",
-				qPrintable(path), sf_strerror(sf));
+				path.c_str(), sf_strerror(sf));
 		return false;
 	}
 
@@ -1048,7 +1049,7 @@ bool SoundFont::writeSampleFile(Sample *s, QString name)
 
 int SoundFont::writeCompressedSample(Sample *s)
 {
-	QFile f(path);
+	QFile f(QString::fromStdString(path));
 	if (!f.open(QIODevice::ReadOnly))
 	{
 		fprintf(stderr, "cannot open <%s>\n", qPrintable(f.fileName()));
@@ -1200,7 +1201,7 @@ char *SoundFont::readCompressedSample(Sample *s)
 
 bool SoundFont::writeCSample(Sample *s, int idx)
 {
-	QFile fi(path);
+	QFile fi(QString::fromStdString(path));
 	if (!fi.open(QIODevice::ReadOnly))
 	{
 		fprintf(stderr, "cannot open <%s>\n", qPrintable(fi.fileName()));

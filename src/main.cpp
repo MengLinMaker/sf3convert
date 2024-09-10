@@ -49,14 +49,15 @@ int main(int argc, char *argv[])
 		soundFont.dumpPresets();
 	else
 	{
-		QFile newSoundFontPath(argv[2]);
-		if (!newSoundFontPath.open(QIODevice::WriteOnly))
+		const char *newSoundFontPath = argv[2];
+		QFile newSoundFont(newSoundFontPath);
+		if (!newSoundFont.open(QIODevice::WriteOnly))
 		{
 			fprintf(stderr, "Failed to setup SoundFont3: %s\n", argv[2]);
 			exit(2);
 		}
-		soundFont.write(&newSoundFontPath, oggQuality, oggDbAmp);
-		newSoundFontPath.close();
+		soundFont.write(&newSoundFont, oggQuality, oggDbAmp);
+		newSoundFont.close();
 	}
 	return 0;
 }

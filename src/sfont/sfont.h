@@ -1,5 +1,4 @@
 #pragma once
-#include <QtCore/QVector>
 #include <QtCore/QFile>
 
 //---------------------------------------------------------
@@ -123,8 +122,8 @@ struct GeneratorList
 
 struct Zone
 {
-	QVector<GeneratorList *> generators;
-	QVector<ModulatorList *> modulators;
+	std::vector<GeneratorList *> generators;
+	std::vector<ModulatorList *> modulators;
 	int instrumentIndex;
 };
 
@@ -141,7 +140,7 @@ struct Preset
 	int library{0};
 	int genre{0};
 	int morphology{0};
-	QVector<Zone *> zones;
+	std::vector<Zone *> zones;
 };
 
 //---------------------------------------------------------
@@ -152,7 +151,7 @@ struct Instrument
 {
 	char *name;
 	int index; // used only for read
-	QVector<Zone *> zones;
+	std::vector<Zone *> zones;
 
 	Instrument();
 	~Instrument();
@@ -199,12 +198,12 @@ class SoundFont
 	int samplePos;
 	int sampleLen;
 
-	QVector<Preset *> presets;
-	QVector<Instrument *> instruments;
+	std::vector<Preset *> presets;
+	std::vector<Instrument *> instruments;
 
-	QVector<Zone *> pZones;
-	QVector<Zone *> iZones;
-	QVector<Sample *> samples;
+	std::vector<Zone *> pZones;
+	std::vector<Zone *> iZones;
+	std::vector<Sample *> samples;
 
 	QFile *file;
 	FILE *f;
@@ -226,9 +225,9 @@ class SoundFont
 	void readVersion();
 	char *readString(int);
 	void readPhdr(int);
-	void readBag(int, QVector<Zone *> *);
-	void readMod(int, QVector<Zone *> *);
-	void readGen(int, QVector<Zone *> *);
+	void readBag(int, std::vector<Zone *> *);
+	void readMod(int, std::vector<Zone *> *);
+	void readGen(int, std::vector<Zone *> *);
 	void readInst(int);
 	void readShdr(int);
 
@@ -249,9 +248,9 @@ class SoundFont
 	void writeIfil();
 	void writeSmpl();
 	void writePhdr();
-	void writeBag(const char *fourcc, QVector<Zone *> *);
-	void writeMod(const char *fourcc, const QVector<Zone *> *);
-	void writeGen(const char *fourcc, QVector<Zone *> *);
+	void writeBag(const char *fourcc, std::vector<Zone *> *);
+	void writeMod(const char *fourcc, const std::vector<Zone *> *);
+	void writeGen(const char *fourcc, std::vector<Zone *> *);
 	void writeInst();
 	void writeShdr();
 
@@ -264,7 +263,7 @@ public:
 	~SoundFont();
 	bool read();
 	bool write(QFile *, double oggQuality, double oggAmp);
-	bool writeCode(QVector<int>);
+	bool writeCode(std::vector<int>);
 	bool writeCode();
 	void dumpPresets();
 };

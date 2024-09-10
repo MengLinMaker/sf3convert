@@ -423,21 +423,21 @@ void SoundFont::readPhdr(int len)
 			while (n--)
 			{
 				Zone *z = new Zone;
-				presets.back()->zones.append(z);
-				pZones.append(z);
+				presets.back()->zones.push_back(z);
+				pZones.push_back(z);
 			}
 		}
 		index1 = index2;
-		presets.append(preset);
+		presets.push_back(preset);
 	}
-	presets.takeLast();
+	presets.pop_back();
 }
 
 //---------------------------------------------------------
 //   readBag
 //---------------------------------------------------------
 
-void SoundFont::readBag(int len, QVector<Zone *> *zones)
+void SoundFont::readBag(int len, std::vector<Zone *> *zones)
 {
 	if (len % 4)
 		throw(std::string("bag size not a multiple of 4"));
@@ -458,10 +458,10 @@ void SoundFont::readBag(int len, QVector<Zone *> *zones)
 			throw("modulator indices not monotonic");
 		int n = mIndex2 - mIndex1;
 		while (n--)
-			zone->modulators.append(new ModulatorList);
+			zone->modulators.push_back(new ModulatorList);
 		n = gIndex2 - gIndex1;
 		while (n--)
-			zone->generators.append(new GeneratorList);
+			zone->generators.push_back(new GeneratorList);
 		gIndex1 = gIndex2;
 		mIndex1 = mIndex2;
 	}
@@ -471,7 +471,7 @@ void SoundFont::readBag(int len, QVector<Zone *> *zones)
 //   readMod
 //---------------------------------------------------------
 
-void SoundFont::readMod(int size, QVector<Zone *> *zones)
+void SoundFont::readMod(int size, std::vector<Zone *> *zones)
 {
 	foreach (Zone *zone, *zones)
 	{
@@ -496,7 +496,7 @@ void SoundFont::readMod(int size, QVector<Zone *> *zones)
 //   readGen
 //---------------------------------------------------------
 
-void SoundFont::readGen(int size, QVector<Zone *> *zones)
+void SoundFont::readGen(int size, std::vector<Zone *> *zones)
 {
 	if (size % 4)
 		throw(std::string("bad generator list size"));
@@ -546,14 +546,14 @@ void SoundFont::readInst(int size)
 			while (n--)
 			{
 				Zone *z = new Zone;
-				instruments.back()->zones.append(z);
-				iZones.append(z);
+				instruments.back()->zones.push_back(z);
+				iZones.push_back(z);
 			}
 		}
 		index1 = index2;
-		instruments.append(instrument);
+		instruments.push_back(instrument);
 	}
-	instruments.takeLast();
+	instruments.pop_back();
 }
 
 //---------------------------------------------------------
@@ -580,7 +580,7 @@ void SoundFont::readShdr(int size)
 		s->loopstart -= s->start;
 		s->loopend -= s->start;
 		// printf("readFontHeader %d %d   %d %d\n", s->start, s->end, s->loopstart, s->loopend);
-		samples.append(s);
+		samples.push_back(s);
 	}
 	skip(46); // trailing record
 }
@@ -832,7 +832,7 @@ void SoundFont::writePreset(int zoneIdx, const Preset *preset)
 //   writeBag
 //---------------------------------------------------------
 
-void SoundFont::writeBag(const char *fourcc, QVector<Zone *> *zones)
+void SoundFont::writeBag(const char *fourcc, std::vector<Zone *> *zones)
 {
 	write(fourcc, 4);
 	int n = zones->size();
@@ -854,7 +854,7 @@ void SoundFont::writeBag(const char *fourcc, QVector<Zone *> *zones)
 //   writeMod
 //---------------------------------------------------------
 
-void SoundFont::writeMod(const char *fourcc, const QVector<Zone *> *zones)
+void SoundFont::writeMod(const char *fourcc, const std::vector<Zone *> *zones)
 {
 	write(fourcc, 4);
 	int n = 0;
@@ -889,7 +889,7 @@ void SoundFont::writeModulator(const ModulatorList *m)
 //   writeGen
 //---------------------------------------------------------
 
-void SoundFont::writeGen(const char *fourcc, QVector<Zone *> *zones)
+void SoundFont::writeGen(const char *fourcc, std::vector<Zone *> *zones)
 {
 	write(fourcc, 4);
 	int n = 0;
@@ -1238,7 +1238,7 @@ bool SoundFont::writeCSample(Sample *s, int idx)
 //   checkInstrument
 //---------------------------------------------------------
 
-static bool checkInstrument(QVector<int> pnums, QVector<Preset *> presets, int instrIdx)
+static bool checkInstrument(std::vector<int> pnums, std::vector<Preset *> presets, int instrIdx)
 {
 	foreach (int idx, pnums)
 	{
@@ -1258,7 +1258,7 @@ static bool checkInstrument(QVector<int> pnums, QVector<Preset *> presets, int i
 	return false;
 }
 
-static bool checkInstrument(QVector<Preset *> presets, int instrIdx)
+static bool checkInstrument(std::vector<Preset *> presets, int instrIdx)
 {
 	bool result = false;
 	for (int i = 0; i < presets.size(); i++)
@@ -1281,7 +1281,7 @@ static bool checkInstrument(QVector<Preset *> presets, int instrIdx)
 //   checkSample
 //---------------------------------------------------------
 
-static bool checkSample(QVector<int> pnums, QVector<Preset *> presets, QVector<Instrument *> instruments,
+static bool checkSample(std::vector<int> pnums, std::vector<Preset *> presets, std::vector<Instrument *> instruments,
 						int sampleIdx)
 {
 	int idx = 0;
@@ -1295,7 +1295,7 @@ static bool checkSample(QVector<int> pnums, QVector<Preset *> presets, QVector<I
 		int zones = instrument->zones.size();
 		foreach (Zone *z, instrument->zones)
 		{
-			QVector<GeneratorList *> gl;
+			std::vector<GeneratorList *> gl;
 			foreach (GeneratorList *g, z->generators)
 			{
 				if (g->gen == Gen_SampleId)
@@ -1314,7 +1314,7 @@ static bool checkSample(QVector<int> pnums, QVector<Preset *> presets, QVector<I
 //   checkSample
 //---------------------------------------------------------
 
-static bool checkSample(QVector<Preset *> presets, QVector<Instrument *> instruments,
+static bool checkSample(std::vector<Preset *> presets, std::vector<Instrument *> instruments,
 						int sampleIdx)
 {
 	int idx = 0;
@@ -1328,7 +1328,7 @@ static bool checkSample(QVector<Preset *> presets, QVector<Instrument *> instrum
 		int zones = instrument->zones.size();
 		foreach (Zone *z, instrument->zones)
 		{
-			QVector<GeneratorList *> gl;
+			std::vector<GeneratorList *> gl;
 			foreach (GeneratorList *g, z->generators)
 			{
 				if (g->gen == Gen_SampleId)
@@ -1368,12 +1368,12 @@ bool SoundFont::writeCode()
 			end = samples.size();
 		else
 			end = (i + 1) * n;
-		QVector<int> sampleIdx;
+		std::vector<int> sampleIdx;
 		for (int idx = i * n; idx < end; ++idx)
 		{
 			Sample *s = samples[idx];
 			writeCSample(s, idx);
-			sampleIdx.append(idx);
+			sampleIdx.push_back(idx);
 		}
 
 		//
@@ -1431,7 +1431,7 @@ bool SoundFont::writeCode()
 			int veloHi = 127;
 			int sampleIdx = -1;
 
-			QVector<GeneratorList *> gl;
+			std::vector<GeneratorList *> gl;
 			foreach (GeneratorList *g, z->generators)
 			{
 				const char *name = generatorNames[g->gen];
@@ -1448,7 +1448,7 @@ bool SoundFont::writeCode()
 				else if (g->gen == Gen_SampleId)
 					sampleIdx = g->amount.uword;
 				else
-					gl.append(g);
+					gl.push_back(g);
 			}
 			int idx3 = 0;
 			foreach (GeneratorList *g, gl)
@@ -1582,7 +1582,7 @@ bool SoundFont::writeCode()
 //   writeCode
 //---------------------------------------------------------
 
-bool SoundFont::writeCode(QVector<int> pnums)
+bool SoundFont::writeCode(std::vector<int> pnums)
 {
 	printf("write code\n");
 
@@ -1595,14 +1595,14 @@ bool SoundFont::writeCode(QVector<int> pnums)
 	//
 	// dump wave samples
 	//
-	QVector<int> sampleIdx;
+	std::vector<int> sampleIdx;
 	for (int idx = 0; idx < n; ++idx)
 	{
 		if (!checkSample(pnums, presets, instruments, idx))
 			continue;
 		Sample *s = samples[idx];
 		writeCSample(s, idx);
-		sampleIdx.append(idx);
+		sampleIdx.push_back(idx);
 	}
 
 	//
@@ -1644,7 +1644,7 @@ bool SoundFont::writeCode(QVector<int> pnums)
 			int veloHi = 127;
 			int sampleIdx = -1;
 
-			QVector<GeneratorList *> gl;
+			std::vector<GeneratorList *> gl;
 
 			foreach (GeneratorList *g, z->generators)
 			{
@@ -1662,7 +1662,7 @@ bool SoundFont::writeCode(QVector<int> pnums)
 				else if (g->gen == Gen_SampleId)
 					sampleIdx = g->amount.uword;
 				else
-					gl.append(g);
+					gl.push_back(g);
 			}
 			int idx3 = 0;
 			foreach (GeneratorList *g, gl)

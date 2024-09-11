@@ -76,8 +76,8 @@ SoundFont::~SoundFont()
 
 bool SoundFont::read()
 {
-	file = new QFile(QString::fromStdString(path));
-	if (!file->open(QIODevice::ReadOnly))
+	file = new std::fstream(path);
+	if (!file->is_open())
 	{
 		fprintf(stderr, "cannot open <%s>\n", path.c_str());
 		delete file;
@@ -123,8 +123,8 @@ bool SoundFont::read()
 
 void SoundFont::skip(int n)
 {
-	int pos = file->pos();
-	if (!file->seek(pos + n))
+	int pos = file->tellg();
+	if (!file->seekg(pos + n))
 		throw(std::string("unexpected end of file\n"));
 }
 
@@ -158,7 +158,7 @@ void SoundFont::readSignature(const char *signature)
 
 void SoundFont::readSignature(char *signature)
 {
-	if (file->read(signature, 4) != 4)
+	if (file->read(signature, 4).fail())
 		throw(std::string("unexpected end of file\n"));
 }
 
@@ -169,7 +169,7 @@ void SoundFont::readSignature(char *signature)
 unsigned SoundFont::readDword()
 {
 	unsigned format;
-	if (file->read((char *)&format, 4) != 4)
+	if (file->read((char *)&format, 4).fail())
 		throw(std::string("unexpected end of file\n"));
 	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
 		return BE_LONG(format);
@@ -235,7 +235,7 @@ void SoundFont::writeShort(short val)
 int SoundFont::readWord()
 {
 	unsigned short format;
-	if (file->read((char *)&format, 2) != 2)
+	if (file->read((char *)&format, 2).fail())
 		throw(std::string("unexpected end of file\n"));
 	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
 		return BE_SHORT(format);
@@ -250,7 +250,7 @@ int SoundFont::readWord()
 int SoundFont::readShort()
 {
 	short format;
-	if (file->read((char *)&format, 2) != 2)
+	if (file->read((char *)&format, 2).fail())
 		throw(std::string("unexpected end of file\n"));
 	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
 		return BE_SHORT(format);
@@ -265,7 +265,7 @@ int SoundFont::readShort()
 int SoundFont::readByte()
 {
 	uchar val;
-	if (file->read((char *)&val, 1) != 1)
+	if (file->read((char *)&val, 1).fail())
 		throw(std::string("unexpected end of file\n"));
 	return val;
 }
@@ -277,7 +277,7 @@ int SoundFont::readByte()
 int SoundFont::readChar()
 {
 	char val;
-	if (file->read(&val, 1) != 1)
+	if (file->read(&val, 1).fail())
 		throw(std::string("unexpected end of file\n"));
 	return val;
 }
@@ -289,7 +289,7 @@ int SoundFont::readChar()
 void SoundFont::readVersion()
 {
 	unsigned char data[4];
-	if (file->read((char *)data, 4) != 4)
+	if (file->read((char *)data, 4).fail())
 		throw(std::string("unexpected end of file\n"));
 	version.major = data[0] + (data[1] << 8);
 	version.minor = data[2] + (data[3] << 8);
@@ -302,7 +302,7 @@ void SoundFont::readVersion()
 char *SoundFont::readString(int n)
 {
 	char data[2500];
-	if (file->read((char *)data, n) != n)
+	if (file->read((char *)data, n).fail())
 		throw(std::string("unexpected end of file\n"));
 	if (data[n - 1] != 0)
 		data[n] = 0;
@@ -347,7 +347,7 @@ void SoundFont::readSection(const char *fourcc, int len)
 		copyright = readString(len);
 		break;
 	case FOURCC('s', 'm', 'p', 'l'): // the digital audio samples
-		samplePos = file->pos();
+		samplePos = file->tellg();
 		sampleLen = len;
 		skip(len);
 		break;
@@ -445,7 +445,7 @@ void SoundFont::readBag(int len, std::vector<Zone *> *zones)
 	int gIndex1 = readWord();
 	int mIndex1 = readWord();
 	len -= 4;
-	for (Zone *zone: *zones)
+	for (Zone *zone : *zones)
 	{
 		gIndex2 = readWord();
 		mIndex2 = readWord();
@@ -473,9 +473,9 @@ void SoundFont::readBag(int len, std::vector<Zone *> *zones)
 
 void SoundFont::readMod(int size, std::vector<Zone *> *zones)
 {
-	for (Zone *zone: *zones)
+	for (Zone *zone : *zones)
 	{
-		for (ModulatorList *m: zone->modulators)
+		for (ModulatorList *m : zone->modulators)
 		{
 			size -= 10;
 			if (size < 0)
@@ -500,13 +500,13 @@ void SoundFont::readGen(int size, std::vector<Zone *> *zones)
 {
 	if (size % 4)
 		throw(std::string("bad generator list size"));
-	for (Zone *zone: *zones)
+	for (Zone *zone : *zones)
 	{
 		size -= (zone->generators.size() * 4);
 		if (size < 0)
 			break;
 
-		for (GeneratorList *gen: zone->generators)
+		for (GeneratorList *gen : zone->generators)
 		{
 			gen->gen = static_cast<Generator>(readWord());
 			if (gen->gen == Gen_KeyRange || gen->gen == Gen_VelRange)
@@ -609,7 +609,7 @@ static const char *generatorNames[] = {
 //   write
 //---------------------------------------------------------
 
-bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
+bool SoundFont::write(std::fstream *f, double oggQuality, double oggAmp)
 {
 	file = f;
 	_oggQuality = oggQuality;
@@ -619,12 +619,12 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 	try
 	{
 		file->write("RIFF", 4);
-		riffLenPos = file->pos();
+		riffLenPos = file->tellg();
 		writeDword(0);
 		file->write("sfbk", 4);
 
 		file->write("LIST", 4);
-		listLenPos = file->pos();
+		listLenPos = file->tellg();
 		writeDword(0);
 		file->write("INFO", 4);
 
@@ -646,23 +646,23 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 		if (copyright)
 			writeStringSection("ICOP", copyright);
 
-		int pos = file->pos();
-		file->seek(listLenPos);
+		int pos = file->tellg();
+		file->seekg(listLenPos);
 		writeDword(pos - listLenPos - 4);
-		file->seek(pos);
+		file->seekg(pos);
 
 		file->write("LIST", 4);
-		listLenPos = file->pos();
+		listLenPos = file->tellg();
 		writeDword(0);
 		file->write("sdta", 4);
 		writeSmpl();
-		pos = file->pos();
-		file->seek(listLenPos);
+		pos = file->tellg();
+		file->seekg(listLenPos);
 		writeDword(pos - listLenPos - 4);
-		file->seek(pos);
+		file->seekg(pos);
 
 		file->write("LIST", 4);
-		listLenPos = file->pos();
+		listLenPos = file->tellg();
 		writeDword(0);
 		file->write("pdta", 4);
 
@@ -676,13 +676,13 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 		writeGen("igen", &iZones);
 		writeShdr();
 
-		pos = file->pos();
-		file->seek(listLenPos);
+		pos = file->tellg();
+		file->seekg(listLenPos);
 		writeDword(pos - listLenPos - 4);
-		file->seek(pos);
+		file->seekg(pos);
 
-		int endPos = file->pos();
-		file->seek(riffLenPos);
+		int endPos = file->tellg();
+		file->seekg(riffLenPos);
 		writeDword(endPos - riffLenPos - 4);
 	}
 	catch (std::string s)
@@ -699,7 +699,7 @@ bool SoundFont::write(QFile *f, double oggQuality, double oggAmp)
 
 void SoundFont::write(const char *p, int n)
 {
-	if (file->write(p, n) != n)
+	if (file->write(p, n).fail())
 		throw(std::string("write error"));
 }
 
@@ -747,12 +747,12 @@ void SoundFont::writeSmpl()
 {
 	write("smpl", 4);
 
-	int pos = file->pos();
+	int pos = file->tellg();
 	writeDword(0);
 	int sampleLen = 0;
 	if (writeCompressed)
 	{
-		for (Sample *s: samples)
+		for (Sample *s : samples)
 		{
 			s->sampletype |= 0x10;
 			int len = writeCompressedSample(s);
@@ -764,12 +764,12 @@ void SoundFont::writeSmpl()
 	else
 	{
 		char *buffer = new char[sampleLen];
-		QFile f(QString::fromStdString(path));
-		if (!f.open(QIODevice::ReadOnly))
-			throw(std::format("cannot open <%s>", qPrintable(f.fileName())));
-		for (Sample *s: samples)
+		std::fstream f(path);
+		if (!f.is_open())
+			throw(std::format("cannot open <%s>", path.c_str()));
+		for (Sample *s : samples)
 		{
-			f.seek(samplePos + s->start * sizeof(short));
+			f.seekg(samplePos + s->start * sizeof(short));
 
 			int len = (s->end - s->start) * sizeof(short);
 			f.read(buffer, len);
@@ -783,10 +783,10 @@ void SoundFont::writeSmpl()
 		f.close();
 		delete[] buffer;
 	}
-	int npos = file->pos();
-	file->seek(pos);
+	int npos = file->tellg();
+	file->seekg(pos);
 	writeDword(npos - pos - 4);
-	file->seek(npos);
+	file->seekg(npos);
 }
 
 //---------------------------------------------------------
@@ -799,7 +799,7 @@ void SoundFont::writePhdr()
 	int n = presets.size();
 	writeDword((n + 1) * 38);
 	int zoneIdx = 0;
-	for (const Preset *p: presets)
+	for (const Preset *p : presets)
 	{
 		writePreset(zoneIdx, p);
 		zoneIdx += p->zones.size();
@@ -839,7 +839,7 @@ void SoundFont::writeBag(const char *fourcc, std::vector<Zone *> *zones)
 	writeDword((n + 1) * 4);
 	int gIndex = 0;
 	int pIndex = 0;
-	for (const Zone *z: *zones)
+	for (const Zone *z : *zones)
 	{
 		writeWord(gIndex);
 		writeWord(pIndex);
@@ -858,13 +858,13 @@ void SoundFont::writeMod(const char *fourcc, const std::vector<Zone *> *zones)
 {
 	write(fourcc, 4);
 	int n = 0;
-	for (const Zone *z: *zones)
+	for (const Zone *z : *zones)
 		n += z->modulators.size();
 	writeDword((n + 1) * 10);
 
-	for (const Zone *zone: *zones)
+	for (const Zone *zone : *zones)
 	{
-		for (const ModulatorList *m: zone->modulators)
+		for (const ModulatorList *m : zone->modulators)
 			writeModulator(m);
 	}
 	ModulatorList mod;
@@ -893,13 +893,13 @@ void SoundFont::writeGen(const char *fourcc, std::vector<Zone *> *zones)
 {
 	write(fourcc, 4);
 	int n = 0;
-	for (const Zone *z: *zones)
+	for (const Zone *z : *zones)
 		n += z->generators.size();
 	writeDword((n + 1) * 4);
 
-	for (const Zone *zone: *zones)
+	for (const Zone *zone : *zones)
 	{
-		for (const GeneratorList *g: zone->generators)
+		for (const GeneratorList *g : zone->generators)
 			writeGenerator(g);
 	}
 	GeneratorList gen;
@@ -935,7 +935,7 @@ void SoundFont::writeInst()
 	int n = instruments.size();
 	writeDword((n + 1) * 22);
 	int zoneIdx = 0;
-	for (const Instrument *p: instruments)
+	for (const Instrument *p : instruments)
 	{
 		writeInstrument(zoneIdx, p);
 		zoneIdx += p->zones.size();
@@ -967,7 +967,7 @@ void SoundFont::writeShdr()
 {
 	write("shdr", 4);
 	writeDword(46 * (samples.size() + 1));
-	for (const Sample *s: samples)
+	for (const Sample *s : samples)
 		writeSample(s);
 	Sample s;
 	memset(&s, 0, sizeof(s));
@@ -1004,13 +1004,13 @@ bool SoundFont::writeSampleFile(Sample *s, std::string name)
 {
 	std::string path = "waves/" + name + ".ogg";
 
-	QFile f(QString::fromStdString(path));
-	if (!f.open(QIODevice::ReadOnly))
+	std::fstream f(path);
+	if (!f.is_open())
 	{
-		fprintf(stderr, "cannot open <%s>\n", qPrintable(f.fileName()));
+		fprintf(stderr, "cannot open <%s>\n", path.c_str());
 		return false;
 	}
-	f.seek(samplePos + s->start * sizeof(short));
+	f.seekg(samplePos + s->start * sizeof(short));
 	int len = s->end - s->start;
 	short buffer[len];
 	f.read((char *)buffer, len * sizeof(short));
@@ -1049,13 +1049,13 @@ bool SoundFont::writeSampleFile(Sample *s, std::string name)
 
 int SoundFont::writeCompressedSample(Sample *s)
 {
-	QFile f(QString::fromStdString(path));
-	if (!f.open(QIODevice::ReadOnly))
+	std::fstream f(path);
+	if (!f.is_open())
 	{
-		fprintf(stderr, "cannot open <%s>\n", qPrintable(f.fileName()));
+		fprintf(stderr, "cannot open <%s>\n", path.c_str());
 		return 0;
 	}
-	f.seek(samplePos + s->start * sizeof(short));
+	f.seekg(samplePos + s->start * sizeof(short));
 	int samples = s->end - s->start;
 	short ibuffer[samples];
 	f.read((char *)ibuffer, samples * sizeof(short));
@@ -1201,13 +1201,13 @@ char *SoundFont::readCompressedSample(Sample *s)
 
 bool SoundFont::writeCSample(Sample *s, int idx)
 {
-	QFile fi(QString::fromStdString(path));
-	if (!fi.open(QIODevice::ReadOnly))
+	std::fstream fi(path);
+	if (!fi.is_open())
 	{
-		fprintf(stderr, "cannot open <%s>\n", qPrintable(fi.fileName()));
+		fprintf(stderr, "cannot open <%s>\n", path.c_str());
 		return false;
 	}
-	fi.seek(samplePos + s->start * sizeof(short));
+	fi.seekg(samplePos + s->start * sizeof(short));
 	int samples = s->end - s->start;
 	short ibuffer[samples];
 	fi.read((char *)ibuffer, samples * sizeof(short));
@@ -1240,12 +1240,12 @@ bool SoundFont::writeCSample(Sample *s, int idx)
 
 static bool checkInstrument(std::vector<int> pnums, std::vector<Preset *> presets, int instrIdx)
 {
-	for (int idx: pnums)
+	for (int idx : pnums)
 	{
 		Preset *p = presets[idx];
-		for (Zone *z: p->zones)
+		for (Zone *z : p->zones)
 		{
-			for (GeneratorList *g: z->generators)
+			for (GeneratorList *g : z->generators)
 			{
 				if (g->gen == Gen_Instrument)
 				{
@@ -1265,7 +1265,7 @@ static bool checkInstrument(std::vector<Preset *> presets, int instrIdx)
 	{
 		Preset *p = presets[i];
 		Zone *z = p->zones[0];
-		for (GeneratorList *g: z->generators)
+		for (GeneratorList *g : z->generators)
 		{
 			if (g->gen == Gen_Instrument)
 			{
@@ -1285,7 +1285,7 @@ static bool checkSample(std::vector<int> pnums, std::vector<Preset *> presets, s
 						int sampleIdx)
 {
 	int idx = 0;
-	for (Instrument *instrument: instruments)
+	for (Instrument *instrument : instruments)
 	{
 		if (!checkInstrument(pnums, presets, idx))
 		{
@@ -1293,10 +1293,10 @@ static bool checkSample(std::vector<int> pnums, std::vector<Preset *> presets, s
 			continue;
 		}
 		int zones = instrument->zones.size();
-		for (Zone *z: instrument->zones)
+		for (Zone *z : instrument->zones)
 		{
 			std::vector<GeneratorList *> gl;
-			for (GeneratorList *g: z->generators)
+			for (GeneratorList *g : z->generators)
 			{
 				if (g->gen == Gen_SampleId)
 				{
@@ -1318,7 +1318,7 @@ static bool checkSample(std::vector<Preset *> presets, std::vector<Instrument *>
 						int sampleIdx)
 {
 	int idx = 0;
-	for (Instrument *instrument: instruments)
+	for (Instrument *instrument : instruments)
 	{
 		if (!checkInstrument(presets, idx))
 		{
@@ -1326,10 +1326,10 @@ static bool checkSample(std::vector<Preset *> presets, std::vector<Instrument *>
 			continue;
 		}
 		int zones = instrument->zones.size();
-		for (Zone *z: instrument->zones)
+		for (Zone *z : instrument->zones)
 		{
 			std::vector<GeneratorList *> gl;
-			for (GeneratorList *g: z->generators)
+			for (GeneratorList *g : z->generators)
 			{
 				if (g->gen == Gen_SampleId)
 				{
@@ -1379,7 +1379,7 @@ bool SoundFont::writeCode()
 		//
 		// dump Sample[]
 		//
-		for (int idx: sampleIdx)
+		for (int idx : sampleIdx)
 		{
 			Sample *s = samples[idx];
 			fprintf(f, "Sample sample%d(%d, %d, %d, %d, %d, %d, %d, %d, wave%d);\n",
@@ -1419,11 +1419,11 @@ bool SoundFont::writeCode()
 	//
 	int idx2;
 	int idx = 0;
-	for (Instrument *instrument: instruments)
+	for (Instrument *instrument : instruments)
 	{
 		int zones = instrument->zones.size();
 		idx2 = 0;
-		for (Zone *z: instrument->zones)
+		for (Zone *z : instrument->zones)
 		{
 			int keyLo = 0;
 			int keyHi = 127;
@@ -1432,7 +1432,7 @@ bool SoundFont::writeCode()
 			int sampleIdx = -1;
 
 			std::vector<GeneratorList *> gl;
-			for (GeneratorList *g: z->generators)
+			for (GeneratorList *g : z->generators)
 			{
 				const char *name = generatorNames[g->gen];
 				if (g->gen == Gen_KeyRange)
@@ -1451,7 +1451,7 @@ bool SoundFont::writeCode()
 					gl.push_back(g);
 			}
 			int idx3 = 0;
-			for (GeneratorList *g: gl)
+			for (GeneratorList *g : gl)
 			{
 				if ((idx3 % 8) == 0)
 				{
@@ -1508,11 +1508,11 @@ bool SoundFont::writeCode()
 	// dump Preset[]
 	//
 	idx = 0;
-	for (Preset *p: presets)
+	for (Preset *p : presets)
 	{
 		idx2 = 0;
 		int zones = p->zones.size();
-		for (Zone *z: p->zones)
+		for (Zone *z : p->zones)
 		{
 			int keyLo = 0;
 			int keyHi = 127;
@@ -1520,7 +1520,7 @@ bool SoundFont::writeCode()
 			int veloHi = 127;
 			int instrIdx = -1;
 
-			for (GeneratorList *g: z->generators)
+			for (GeneratorList *g : z->generators)
 			{
 				const char *name = generatorNames[g->gen];
 				if (g->gen == Gen_KeyRange)
@@ -1608,7 +1608,7 @@ bool SoundFont::writeCode(std::vector<int> pnums)
 	//
 	// dump Sample[]
 	//
-	for (int idx: sampleIdx)
+	for (int idx : sampleIdx)
 	{
 		Sample *s = samples[idx];
 		fprintf(f, "Sample sample%d(%d, %d, %d, %d, %d, %d, %d, %d, wave%d);\n",
@@ -1627,7 +1627,7 @@ bool SoundFont::writeCode(std::vector<int> pnums)
 	//
 	int idx2;
 	int idx = 0;
-	for (Instrument *instrument: instruments)
+	for (Instrument *instrument : instruments)
 	{
 		if (!checkInstrument(pnums, presets, idx))
 		{
@@ -1636,7 +1636,7 @@ bool SoundFont::writeCode(std::vector<int> pnums)
 		}
 		int zones = instrument->zones.size();
 		idx2 = 0;
-		for (Zone *z: instrument->zones)
+		for (Zone *z : instrument->zones)
 		{
 			int keyLo = 0;
 			int keyHi = 127;
@@ -1646,7 +1646,7 @@ bool SoundFont::writeCode(std::vector<int> pnums)
 
 			std::vector<GeneratorList *> gl;
 
-			for (GeneratorList *g: z->generators)
+			for (GeneratorList *g : z->generators)
 			{
 				const char *name = generatorNames[g->gen];
 				if (g->gen == Gen_KeyRange)
@@ -1665,7 +1665,7 @@ bool SoundFont::writeCode(std::vector<int> pnums)
 					gl.push_back(g);
 			}
 			int idx3 = 0;
-			for (GeneratorList *g: gl)
+			for (GeneratorList *g : gl)
 			{
 				if ((idx3 % 8) == 0)
 				{
@@ -1716,19 +1716,19 @@ bool SoundFont::writeCode(std::vector<int> pnums)
 	// dump Preset[]
 	//
 
-	for (int idx: pnums)
+	for (int idx : pnums)
 	{
 		Preset *p = presets[idx];
 		idx2 = 0;
 		int zones = p->zones.size();
-		for (Zone *z: p->zones)
+		for (Zone *z : p->zones)
 		{
 			int keyLo = 0;
 			int keyHi = 127;
 			int veloLo = 0;
 			int veloHi = 127;
 			int instrIdx = -1;
-			for (GeneratorList *g: z->generators)
+			for (GeneratorList *g : z->generators)
 			{
 				const char *name = generatorNames[g->gen];
 				if (g->gen == Gen_KeyRange)
@@ -1775,7 +1775,7 @@ bool SoundFont::writeCode(std::vector<int> pnums)
 	}
 
 	fprintf(f, "static Preset* sfPresets[%d] = {\n", (int)pnums.size());
-	for (int idx: pnums)
+	for (int idx : pnums)
 		fprintf(f, "      &preset%d,   // %s\n", idx, presets[idx]->name);
 	fprintf(f, "      };\n");
 
@@ -1793,7 +1793,7 @@ bool SoundFont::writeCode(std::vector<int> pnums)
 void SoundFont::dumpPresets()
 {
 	int idx = 0;
-	for (const Preset *p: presets)
+	for (const Preset *p : presets)
 	{
 		printf("%03d %04x-%02x %s\n", idx, p->bank, p->preset, p->name);
 		++idx;

@@ -1,4 +1,5 @@
 #pragma once
+#include <fstream>
 #include <QtCore/QFile>
 
 //---------------------------------------------------------
@@ -205,7 +206,7 @@ class SoundFont
 	std::vector<Zone *> iZones;
 	std::vector<Sample *> samples;
 
-	QFile *file;
+	std::fstream *file;
 	FILE *f;
 
 	double _oggQuality;
@@ -262,7 +263,7 @@ public:
 	SoundFont(const std::string &);
 	~SoundFont();
 	bool read();
-	bool write(QFile *, double oggQuality, double oggAmp);
+	bool write(std::fstream *, double oggQuality, double oggAmp);
 	bool writeCode(std::vector<int>);
 	bool writeCode();
 	void dumpPresets();

@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
 	else
 	{
 		const char *newSoundFontPath = argv[2];
-		QFile newSoundFont(newSoundFontPath);
-		if (!newSoundFont.open(QIODevice::WriteOnly))
+		std::fstream newSoundFont(newSoundFontPath);
+		if (!newSoundFont.is_open())
 		{
 			fprintf(stderr, "Failed to setup SoundFont3: %s\n", argv[2]);
 			exit(2);

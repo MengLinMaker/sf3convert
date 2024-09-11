@@ -9,18 +9,18 @@ RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
     echo "Acquire::BrokenProxy    true;" >> /etc/apt/apt.conf.d/99custom && \
 	apt update -y --fix-missing && \
 	# Conan peer dependencies: make, cmake & gcc
-	apt install -y --fix-missing make cmake ninja-build build-essential qt6-base-dev
+	apt install -y --fix-missing make cmake build-essential
 
 # Install dependencies
 COPY conanfile.py ./
 RUN conan profile detect; \
-	conan install . --build=missing
+	conan install . --build=missing -s compiler.cppstd=23
 
 # Build c++ application
 COPY CMakeUserPresets.json CMakeLists.txt Makefile ./
 COPY src ./src
-RUN make release
+RUN make prod
 
 # Conversion test
-COPY test ./test
-RUN make check
+COPY test/sample.sf2 ./test
+RUN make test-prod

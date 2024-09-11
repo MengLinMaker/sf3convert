@@ -1,32 +1,43 @@
 #=============================================================================
-#  MuseScore sftools
-#
-#  Copyright (C) 2011-2014 Werner Schweer && Meng Lin
-#
-#  This work is free software; you can redistribute it and/or
-#  modify it under the terms of the GNU Library General Public
-#  License as published by the Free Software Foundation; either
-#  version 2 of the License, or (at your option) any later version.
-#
-#  See LICENCE for the licence text and disclaimer of warranty.
+# SETUP
 #=============================================================================
 
-install:
+clean:
+	rm -rf build test/*.sf3
+
+install: clean
 	conan profile detect; \
 	conan install . --build=missing -s compiler.cppstd=23
 
-clean:
-	rm -rf build/Build test/piano.sf3
+#=============================================================================
+# BUILD
+#=============================================================================
 
-release:
-	cmake -B build/Build --preset release
-	ninja -C build/Build
+prod:
+	cmake -B build/Prod --preset prod
+	make -C build/Prod
 
-check:
-	build/Build/sf3convert test/sample.sf2 test/sample.sf3
+dev:
+	cmake -B build/Dev --preset dev
+	ninja -C build/Dev
+
+#=============================================================================
+# TEST
+#=============================================================================
+
+# Test release build script locally
+compose:
+	docker-compose up --build
+
+test-prod:
+	time build/Prod/sf3convert test/sample.sf2 test/sample-release.sf3
+
+test-dev:
+	time build/Dev/sf3convert test/sample.sf2 test/sample-dev.sf3
+
+#=============================================================================
+# DOC
+#=============================================================================
 
 doc:
 	doxygen
-
-compose:
-	docker-compose up --build

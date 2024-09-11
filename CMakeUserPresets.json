@@ -8,8 +8,19 @@
     ],
     "configurePresets": [
         {
-            "name": "release",
+            "name": "dev",
             "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "build/Release/generators/conan_toolchain.cmake"
+                }
+            }
+        },
+        {
+            "name": "prod",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",

@@ -21,13 +21,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v4
-      with:
-        version: '6.7.0'
-        # Reduce build time with cache
-        cache: true
-
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10'
@@ -37,7 +30,7 @@ jobs:
     - uses: seanmiddleditch/gha-setup-ninja@master
 
     - name: Build release package
-      run: make release
+      run: make prod
 
     - uses: actions/upload-artifact@v4
       with:
@@ -46,4 +39,4 @@ jobs:
         retention-days: 28
 
     - name: Test conversion
-      run: make check
+      run: make test-prod

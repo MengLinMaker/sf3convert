@@ -10,13 +10,11 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-
+    runs-on: ${{ matrix.os }}-latest
     strategy:
-      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu, macos]
 
     steps:
     - uses: actions/checkout@v4
@@ -33,7 +31,33 @@ jobs:
 
     - uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.os }}
+        name: ${{ matrix.os }}-sf3convert
+        path: build/Prod/sf3convert
+        retention-days: 28
+
+    - name: Test conversion
+      run: make test-prod
+  build-windows:
+    runs-on: window-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: pip install cmake conan && make install
+
+    - name: Build release package
+      run: make window
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: window-sf3convert
         path: build/Prod/sf3convert
         retention-days: 28
 

@@ -21,6 +21,10 @@ dev:
 	cmake -B build/Dev --preset dev
 	ninja -C build/Dev
 
+window:
+	camke -B build/Prod --preset window
+	make -C build/Prod
+
 #=============================================================================
 # TEST
 #=============================================================================

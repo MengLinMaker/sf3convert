@@ -1,34 +1,45 @@
 {
-    "version": 4,
-    "vendor": {
-        "conan": {}
-    },
-    "include": [
-        "build/Release/generators/CMakePresets.json"
-    ],
-    "configurePresets": [
-        {
-            "name": "dev",
-            "generator": "Ninja",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
-                "CMAKE_TOOLCHAIN_FILE": {
-                    "type": "FILEPATH",
-                    "value": "build/Release/generators/conan_toolchain.cmake"
-                }
-            }
-        },
-        {
-            "name": "prod",
-            "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
-                "CMAKE_TOOLCHAIN_FILE": {
-                    "type": "FILEPATH",
-                    "value": "build/Release/generators/conan_toolchain.cmake"
-                }
-            }
-        }
-    ]
+	"version": 4,
+	"vendor": {
+		"conan": {}
+	},
+	"include": [
+		"build/Release/generators/CMakePresets.json"
+	],
+	"configurePresets": [
+		{
+			"name": "dev",
+			"generator": "Ninja",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release",
+				"CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+				"CMAKE_TOOLCHAIN_FILE": {
+					"type": "FILEPATH",
+					"value": "build/Release/generators/conan_toolchain.cmake"
+				}
+			}
+		},
+		{
+			"name": "prod",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release",
+				"CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+				"CMAKE_TOOLCHAIN_FILE": {
+					"type": "FILEPATH",
+					"value": "build/Release/generators/conan_toolchain.cmake"
+				}
+			}
+		},
+		{
+			"name": "window",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release",
+				"CMAKE_POLICY_DEFAULT_CMP0091": "NEW",
+				"CMAKE_TOOLCHAIN_FILE": {
+					"type": "FILEPATH",
+					"value": "build/generators/conan_toolchain.cmake"
+				}
+			}
+		}
+	]
 }

@@ -50,7 +50,8 @@ int main(int argc, char *argv[])
 	else
 	{
 		const char *newSoundFontPath = argv[2];
-		std::fstream newSoundFont(newSoundFontPath);
+		std::fstream newSoundFont;
+		newSoundFont.open(newSoundFontPath, std::fstream::out);
 		if (!newSoundFont.is_open())
 		{
 			fprintf(stderr, "Failed to setup SoundFont3: %s\n", argv[2]);

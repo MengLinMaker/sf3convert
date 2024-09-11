@@ -5,7 +5,7 @@
 clean:
 	rm -rf build test/*.sf3
 
-install: clean
+install:
 	conan profile detect; \
 	conan install . --build=missing -s compiler.cppstd=23
 

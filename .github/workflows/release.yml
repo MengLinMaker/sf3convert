@@ -9,13 +9,10 @@ on:
         default: 'warning'
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}-latest
+  build-ubuntu:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        os: [ubuntu, macos]
-
     steps:
     - uses: actions/checkout@v4
 
@@ -24,24 +21,50 @@ jobs:
         python-version: '3.10'
 
     - name: Install dependencies
-      run: pip install cmake conan && make install
+      run: pip install cmake ninja conan && make install
 
     - name: Build release package
-      run: make prod
+      run: make dev
 
     - uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.os }}-sf3convert
-        path: build/Prod/sf3convert
+        name: ubuntu-sf3convert
+        path: build/Dev/sf3convert
         retention-days: 28
 
     - name: Test conversion
-      run: make test-prod
-  build-windows:
-    runs-on: window-latest
+      run: make test-dev
+
+  build-macos:
+    runs-on: macos-latest
     strategy:
       fail-fast: false
+    steps:
+    - uses: actions/checkout@v4
 
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: pip install cmake ninja conan && make install
+
+    - name: Build release package
+      run: make dev
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: macos-sf3convert
+        path: build/dev/sf3convert
+        retention-days: 28
+
+    - name: Test conversion
+      run: make test-dev
+
+  build-windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
     steps:
     - uses: actions/checkout@v4
 

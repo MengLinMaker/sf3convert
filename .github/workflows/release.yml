@@ -27,7 +27,6 @@ jobs:
 
     - name: Install dependencies
       run: pip install cmake conan && make install
-    - uses: seanmiddleditch/gha-setup-ninja@master
 
     - name: Build release package
       run: make prod

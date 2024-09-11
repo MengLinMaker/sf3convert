@@ -1,8 +1,13 @@
 #include "sfont.h"
+
 #include <sndfile.h>
 #include <vorbis/vorbisenc.h>
-#include <format>
+
+#include <math.h>
+#include <stdexcept>
 #include <bit>
+#include <cstring>
+#include <string>
 
 #define BE_SHORT(x) ((((x) & 0xFF) << 8) | (((x) >> 8) & 0xFF))
 #define BE_LONG(x) ((((x) & 0xFF) << 24) |    \
@@ -154,7 +159,7 @@ void SoundFont::readSignature(const char *signature)
 	char fourcc[4];
 	readSignature(fourcc);
 	if (memcmp(fourcc, signature, 4) != 0)
-		throw(std::format("fourcc <%s> expected", signature));
+		throw std::runtime_error("fourcc " + std::string(signature) + " expected");
 }
 
 void SoundFont::readSignature(char *signature)
@@ -383,7 +388,7 @@ void SoundFont::readSection(const char *fourcc, int len)
 	case FOURCC('i', 'v', 'e', 'r'): // sample rom version
 	default:
 		skip(len);
-		throw(std::format("unknown fourcc <%s>", fourcc));
+		throw std::runtime_error("unknown fourcc " + std::string(fourcc));
 		break;
 	}
 }
@@ -522,7 +527,7 @@ void SoundFont::readGen(int size, std::vector<Zone *> *zones)
 		}
 	}
 	if (size != 4)
-		throw(std::format("generator list size mismatch %s != 4", size));
+		throw std::runtime_error("generator list size mismatch " + std::to_string(size) + " != 4");
 	skip(size);
 }
 
@@ -767,7 +772,7 @@ void SoundFont::writeSmpl()
 		char *buffer = new char[sampleLen];
 		std::fstream f(path);
 		if (!f.is_open())
-			throw(std::format("cannot open <%s>", path.c_str()));
+			throw std::runtime_error("cannot open " + path);
 		for (Sample *s : samples)
 		{
 			f.seekg(samplePos + s->start * sizeof(short));

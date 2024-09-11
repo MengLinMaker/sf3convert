@@ -22,7 +22,7 @@ dev:
 	ninja -C build/Dev
 
 window:
-	camke -B build/Prod --preset window
+	cmake -B build/Prod --preset window
 	make -C build/Prod
 
 #=============================================================================

@@ -30,10 +30,10 @@ compose:
 	docker-compose up --build
 
 test-prod:
-	time build/Prod/sf3convert test/sample.sf2 test/sample-release.sf3
+	build/Prod/sf3convert test/sample.sf2 test/sample-release.sf3
 
 test-dev:
-	time build/Dev/sf3convert test/sample.sf2 test/sample-dev.sf3
+	build/Dev/sf3convert test/sample.sf2 test/sample-dev.sf3
 
 #=============================================================================
 # DOC

@@ -22,5 +22,5 @@ COPY src ./src
 RUN make prod
 
 # Conversion test
-COPY test/sample.sf2 ./test
+COPY test ./test
 RUN make test-prod

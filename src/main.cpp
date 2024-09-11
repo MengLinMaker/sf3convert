@@ -1,9 +1,9 @@
 #include "sfont/sfont.h"
-#include <unistd.h>
+#include <getopt.h>
 
 static void cliUsage(const char *pname)
 {
-	fprintf(stderr, "\nusage: %s [-flags] soundfont [outfile]\n", pname);
+	fprintf(stderr, "\nUsage: %s [-flags] soundfont [outfile]\n", pname);
 	fprintf(stderr, "   -h     help\n");
 	fprintf(stderr, "   -q qq  ogg quality\n");
 	fprintf(stderr, "   -a nn  amplification in dB before ogg compression\n");
@@ -11,19 +11,33 @@ static void cliUsage(const char *pname)
 	fprintf(stderr, "\n");
 }
 
+SoundFont readSoundFont(const char *soundFontPath)
+{
+	SoundFont soundFont(soundFontPath);
+	if (!soundFont.read())
+	{
+		fprintf(stderr, "Failed to read input SoundFont: %s\n", soundFontPath);
+		exit(3);
+	}
+	return soundFont;
+}
+
 int main(int argc, char *argv[])
 {
+	if (argc <= 1)
+	{
+		fprintf(stderr, "\nNot enough arguments\n");
+		cliUsage(argv[0]);
+		exit(1);
+	}
+
 	double oggQuality = 0;
 	double oggDbAmp = 0;
-	bool dump = false;
-	int flag;
-	while ((flag = getopt(argc, argv, "xcp:dS:szq:a:")) != EOF)
+	char flag;
+	while ((flag = getopt(argc, argv, "q:a:d")) != EOF)
 	{
 		switch (flag)
 		{
-		case 'h':
-			cliUsage(argv[0]);
-			break;
 		case 'q':
 			oggQuality = atof(optarg);
 			break;
@@ -31,34 +45,34 @@ int main(int argc, char *argv[])
 			oggDbAmp = atof(optarg);
 			break;
 		case 'd':
-			dump = true;
-			break;
+		{
+			const char *soundFontPath = argv[2];
+			SoundFont soundFont = readSoundFont(soundFontPath);
+			soundFont.dumpPresets();
+			exit(0);
+		}
 		default:
-			break;
+			fprintf(stderr, "\nSupported commands\n");
+			cliUsage(argv[0]);
+			exit(0);
 		}
 	}
 
-	const char *soundFontPath = argv[1];
-	SoundFont soundFont(soundFontPath);
-	if (!soundFont.read())
+	// Shift argv position to non-flag args
+	argv += optind;
+
+	const char *soundFontPath = argv[0];
+	SoundFont soundFont = readSoundFont(soundFontPath);
+
+	const char *newSoundFontPath = argv[1];
+	std::fstream newSoundFont;
+	newSoundFont.open(newSoundFontPath, std::fstream::out);
+	if (!newSoundFont)
 	{
-		fprintf(stderr, "Failed to read SoundFont2: %s\n", soundFontPath);
-		exit(3);
+		fprintf(stderr, "Failed to setup output SoundFont: %s\n", newSoundFontPath);
+		exit(2);
 	}
-	else if (dump)
-		soundFont.dumpPresets();
-	else
-	{
-		const char *newSoundFontPath = argv[2];
-		std::fstream newSoundFont;
-		newSoundFont.open(newSoundFontPath, std::fstream::out);
-		if (!newSoundFont.is_open())
-		{
-			fprintf(stderr, "Failed to setup SoundFont3: %s\n", argv[2]);
-			exit(2);
-		}
-		soundFont.write(&newSoundFont, oggQuality, oggDbAmp);
-		newSoundFont.close();
-	}
-	return 0;
+	soundFont.write(&newSoundFont, oggQuality, oggDbAmp);
+	newSoundFont.close();
+	exit(0);
 }

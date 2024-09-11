@@ -34,7 +34,7 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}
-        path: build/Build/sf3convert
+        path: build/Prod/sf3convert
         retention-days: 28
 
     - name: Test conversion

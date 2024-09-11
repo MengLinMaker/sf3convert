@@ -14,14 +14,6 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 
 
 
-# Include Qt library via autosearch
-find_package(Qt6 REQUIRED COMPONENTS Core)
-target_link_libraries(${PROJECT_NAME}
-    Qt6::Core
-)
-
-
-
 # Autosearch lib dependencies
 find_package(SndFile REQUIRED)
 find_package(Vorbis REQUIRED)

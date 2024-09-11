@@ -2,6 +2,7 @@
 #include <sndfile.h>
 #include <vorbis/vorbisenc.h>
 #include <format>
+#include <bit>
 
 #define BE_SHORT(x) ((((x) & 0xFF) << 8) | (((x) >> 8) & 0xFF))
 #define BE_LONG(x) ((((x) & 0xFF) << 24) |    \
@@ -171,7 +172,7 @@ unsigned SoundFont::readDword()
 	unsigned format;
 	if (file->read((char *)&format, 4).fail())
 		throw(std::string("unexpected end of file\n"));
-	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
+	if (std::endian::native == std::endian::big)
 		return BE_LONG(format);
 	else
 		return format;
@@ -183,7 +184,7 @@ unsigned SoundFont::readDword()
 
 void SoundFont::writeDword(int val)
 {
-	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
+	if (std::endian::native == std::endian::big)
 		val = BE_LONG(val);
 	write((char *)&val, 4);
 }
@@ -194,7 +195,7 @@ void SoundFont::writeDword(int val)
 
 void SoundFont::writeWord(unsigned short int val)
 {
-	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
+	if (std::endian::native == std::endian::big)
 		val = BE_SHORT(val);
 	write((char *)&val, 2);
 }
@@ -223,7 +224,7 @@ void SoundFont::writeChar(char val)
 
 void SoundFont::writeShort(short val)
 {
-	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
+	if (std::endian::native == std::endian::big)
 		val = BE_SHORT(val);
 	write((char *)&val, 2);
 }
@@ -237,7 +238,7 @@ int SoundFont::readWord()
 	unsigned short format;
 	if (file->read((char *)&format, 2).fail())
 		throw(std::string("unexpected end of file\n"));
-	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
+	if (std::endian::native == std::endian::big)
 		return BE_SHORT(format);
 	else
 		return format;
@@ -252,7 +253,7 @@ int SoundFont::readShort()
 	short format;
 	if (file->read((char *)&format, 2).fail())
 		throw(std::string("unexpected end of file\n"));
-	if (QSysInfo::ByteOrder == QSysInfo::BigEndian)
+	if (std::endian::native == std::endian::big)
 		return BE_SHORT(format);
 	else
 		return format;
@@ -264,7 +265,7 @@ int SoundFont::readShort()
 
 int SoundFont::readByte()
 {
-	uchar val;
+	unsigned char val;
 	if (file->read((char *)&val, 1).fail())
 		throw(std::string("unexpected end of file\n"));
 	return val;
@@ -1112,10 +1113,10 @@ int SoundFont::writeCompressedSample(Sample *s)
 	double linearAmp = pow(10.0, _oggAmp / 20.0);
 	for (;;)
 	{
-		int bufflength = qMin(BLOCK_SIZE, samples - page * BLOCK_SIZE);
+		int bufflength = std::min(BLOCK_SIZE, samples - page * BLOCK_SIZE);
 		float **buffer = vorbis_analysis_buffer(&vd, bufflength);
 		int j = 0;
-		int max = qMin((page + 1) * BLOCK_SIZE, samples);
+		int max = std::min((page + 1) * BLOCK_SIZE, samples);
 		for (i = page * BLOCK_SIZE; i < max; i++)
 		{
 			buffer[0][j] = (ibuffer[i] / 32768.f) * linearAmp;

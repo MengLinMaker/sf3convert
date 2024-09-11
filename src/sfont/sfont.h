@@ -1,6 +1,6 @@
 #pragma once
 #include <fstream>
-#include <QtCore/QFile>
+#include <vector>
 
 //---------------------------------------------------------
 //   sfVersionTag
@@ -104,10 +104,10 @@ struct ModulatorList
 union GeneratorAmount
 {
 	short sword;
-	ushort uword;
+	unsigned short uword;
 	struct
 	{
-		uchar lo, hi;
+		unsigned char lo, hi;
 	};
 };
 

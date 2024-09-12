@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 project(sf3convert)
 
 # Building static binary requires linking static libraries '.a' or'.lib' extension on windows
-set(BUILD_SHARED_LIBS OFF)
 if(WIN32)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
 else()

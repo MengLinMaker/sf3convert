@@ -16,6 +16,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Cache Conan Dependencies
+      id: build-ubuntu-cache-conan
+      uses: actions/cache@v2
+      with:
+        path: /home/runner/.conan2
+        key: build-ubuntu-cache-conan
+
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10'
@@ -42,6 +49,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Cache Conan Dependencies
+      id: build-macos-cache-conan
+      uses: actions/cache@v2
+      with:
+        path: /Users/runner/.conan2
+        key: build-macos-cache-conan
+
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10'
@@ -67,6 +81,13 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v4
+
+    - name: Cache Conan Dependencies
+      id: build-windows-cache-conan
+      uses: actions/cache@v2
+      with:
+        path: C:\Users\runneradmin\.conan2
+        key: build-windows-cache-conan
 
     - uses: actions/setup-python@v5
       with:

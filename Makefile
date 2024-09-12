@@ -18,8 +18,8 @@ prod:
 	ninja -C build/Prod
 
 windows:
-	cmd build/generators/conanbuild.bat
-	cmd build/generators/conanrun.bat
+	./build/generators/conanbuild.bat
+	./build/generators/conanrun.bat
 	cmake --preset conan-default
 	make -C build
 

@@ -1,6 +1,6 @@
 #include "sfont.h"
 
-#include "vorbis/vorbisenc.h"
+#include <vorbis/vorbisenc.h>
 
 #include <math.h>
 #include <stdexcept>

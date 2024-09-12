@@ -15,11 +15,7 @@ install:
 
 prod:
 	cmake -B build/Prod --preset prod
-	make -C build/Prod
-
-dev:
-	cmake -B build/Dev --preset dev
-	ninja -C build/Dev
+	ninja -C build/Prod
 
 windows:
 	cmake --preset windows
@@ -35,9 +31,6 @@ compose:
 
 test-prod:
 	build/Prod/sf3convert test/sample.sf2 test/sample-release.sf3
-
-test-dev:
-	build/Dev/sf3convert test/sample.sf2 test/sample-dev.sf3
 
 #=============================================================================
 # DOC

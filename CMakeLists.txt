@@ -14,9 +14,9 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 
 
 
-# Autosearch lib dependencies with hint for Windows
-find_package(Vorbis REQUIRED PATHS "C:/Users/runneradmin/.conan2")
-find_package(Ogg REQUIRED PATHS "C:/Users/runneradmin/.conan2")
+# Autosearch lib dependencies
+find_package(Vorbis REQUIRED)
+find_package(Ogg REQUIRED)
 target_link_libraries(${PROJECT_NAME}
     vorbis::vorbis
     Ogg::ogg

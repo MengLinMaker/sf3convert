@@ -13,8 +13,6 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 # Autosearch lib dependencies
 set(CMAKE_FIND_DEBUG_MODE TRUE)
 find_package(Vorbis REQUIRED)
-find_package(Ogg REQUIRED)
 target_link_libraries(${PROJECT_NAME}
     vorbis::vorbis
-    Ogg::ogg
 )

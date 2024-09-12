@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(sf3convert)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Building static binary requires linking static libraries '.a' or'.lib' extension on windows
 if(WIN32)

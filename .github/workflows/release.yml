@@ -40,7 +40,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: Install dependencies
-      run: pip install cmake conan && make install
+      run: pip install cmake ninja conan && make install
 
     # Build package
     - name: Build release package - ${{ matrix.config.os }}

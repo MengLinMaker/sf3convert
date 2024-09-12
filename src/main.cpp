@@ -1,5 +1,6 @@
 #include "sfont/sfont.h"
-#include <getopt.h>
+
+#include "getopt.h"
 
 static void cliUsage(const char *pname)
 {

@@ -32,6 +32,7 @@
 		},
 		{
 			"name": "window",
+			"generator": "MinGW Makefiles",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release",
 				"CMAKE_POLICY_DEFAULT_CMP0091": "NEW",

@@ -22,7 +22,7 @@ dev:
 	ninja -C build/Dev
 
 windows:
-	cmake --preset conan-default
+	cmake --preset windows
 	make -C build
 
 #=============================================================================

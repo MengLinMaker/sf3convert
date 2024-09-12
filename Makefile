@@ -14,7 +14,7 @@ install:
 #=============================================================================
 
 prod:
-	cmake -B build/Prod --preset conan-release
+	cmake -B build/Prod --preset prod
 	make -C build/Prod
 
 dev:
@@ -22,8 +22,8 @@ dev:
 	ninja -C build/Dev
 
 window:
-	cmake -B build/Prod --preset conan-default
-	make -C build/Prod
+	cmake --preset conan-default
+	make -C build
 
 #=============================================================================
 # TEST

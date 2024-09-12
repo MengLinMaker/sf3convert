@@ -165,11 +165,11 @@ struct Instrument
 struct Sample
 {
 	char *name;
-	uint start;
-	uint end;
-	uint loopstart;
-	uint loopend;
-	uint samplerate;
+	unsigned int start;
+	unsigned int end;
+	unsigned int loopstart;
+	unsigned int loopend;
+	unsigned int samplerate;
 
 	int origpitch;
 	int pitchadj;

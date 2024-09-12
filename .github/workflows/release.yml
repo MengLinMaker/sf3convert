@@ -20,10 +20,10 @@ jobs:
             conan_cache: /home/runner/.conan2
             build_script: make prod
           - os: macos
-            conan_cache: C:\Users\runneradmin\.conan2
+            conan_cache: /Users/runner/.conan2
             build_script: make prod
           - os: windows
-            conan_cache: /Users/runner/.conan2
+            conan_cache: C:\Users\runneradmin\.conan2
             build_script: make windows
     steps:
     - uses: actions/checkout@v4

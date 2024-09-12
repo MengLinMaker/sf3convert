@@ -21,7 +21,7 @@ dev:
 	cmake -B build/Dev --preset dev
 	ninja -C build/Dev
 
-window:
+windows:
 	cmake --preset conan-default
 	make -C build
 

@@ -9,101 +9,50 @@ on:
         default: 'warning'
 
 jobs:
-  build-ubuntu:
-    runs-on: ubuntu-latest
+  build:
+    name: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.os }}-latest
     strategy:
       fail-fast: false
+      matrix:
+        config:
+          - os: ubuntu
+            conan_cache: /home/runner/.conan2
+            build_script: make prod
+          - os: macos
+            conan_cache: C:\Users\runneradmin\.conan2
+            build_script: make prod
+          - os: windows
+            conan_cache: /Users/runner/.conan2
+            build_script: make windows
     steps:
     - uses: actions/checkout@v4
 
-    - name: Cache Conan Dependencies
-      id: build-ubuntu-cache-conan
+    # Conan deps are cached in different locations depending on OS
+    - name: Cache Conan Dependencies - ${{ matrix.config.os }}
       uses: actions/cache@v2
       with:
-        path: /home/runner/.conan2
-        key: build-ubuntu-cache-conan
+        path: ${{ matrix.config.conan_cache }}
+        key: build-${{ matrix.config.os }}-cache-conan
 
+    # Install dependencies
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-
     - name: Install dependencies
       run: pip install cmake conan && make install
 
-    - name: Build release package
-      run: make prod
+    # Build package
+    - name: Build release package - ${{ matrix.config.os }}
+      run: ${{ matrix.config.build_script }}
 
+    # Release package
     - uses: actions/upload-artifact@v4
       with:
-        name: ubuntu-sf3convert
+        name: ${{ matrix.config.os }}-sf3convert
         path: build/Prod/sf3convert
         retention-days: 28
 
-    - name: Test conversion
-      run: make test-prod
-
-  build-macos:
-    runs-on: macos-latest
-    strategy:
-      fail-fast: false
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Cache Conan Dependencies
-      id: build-macos-cache-conan
-      uses: actions/cache@v2
-      with:
-        path: /Users/runner/.conan2
-        key: build-macos-cache-conan
-
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-
-    - name: Install dependencies
-      run: pip install cmake conan && make install
-
-    - name: Build release package
-      run: make prod
-
-    - uses: actions/upload-artifact@v4
-      with:
-        name: macos-sf3convert
-        path: build/Prod/sf3convert
-        retention-days: 28
-
-    - name: Test conversion
-      run: make test-prod
-
-  build-windows:
-    runs-on: windows-latest
-    strategy:
-      fail-fast: false
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Cache Conan Dependencies
-      id: build-windows-cache-conan
-      uses: actions/cache@v2
-      with:
-        path: C:\Users\runneradmin\.conan2
-        key: build-windows-cache-conan
-
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-
-    - name: Install dependencies
-      run: pip install cmake conan && make install
-
-    - name: Build release package
-      run: make window
-
-    - uses: actions/upload-artifact@v4
-      with:
-        name: window-sf3convert
-        path: build/Prod/sf3convert
-        retention-days: 28
-
+    # Test package
     - name: Test conversion
       run: make test-prod

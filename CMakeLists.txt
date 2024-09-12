@@ -12,12 +12,9 @@ endif()
 # Log how cmake finds libraries
 set(CMAKE_FIND_DEBUG_MODE TRUE)
 
-# Add source files, targeting C++ 23
-file(GLOB_RECURSE MY_SOURCES
-	src/*.cpp
-)
+# Add source files
+file(GLOB_RECURSE MY_SOURCES src/*.cpp)
 add_executable(${PROJECT_NAME} ${MY_SOURCES})
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
 
 # Autosearch lib dependencies
 find_package(Vorbis REQUIRED)

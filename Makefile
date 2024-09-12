@@ -18,7 +18,7 @@ prod:
 	ninja -C build/Prod
 
 windows:
-	cmake --preset windows
+	cmake --preset conan-default
 	make -C build
 
 #=============================================================================

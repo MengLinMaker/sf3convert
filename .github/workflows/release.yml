@@ -117,14 +117,14 @@ jobs:
     - name: Install dependencies
       run: pip install cmake conan && make install
 
-    - name: Build release package
-      run: make window
+    # - name: Build release package
+    #   run: make window
 
-    - uses: actions/upload-artifact@v4
-      with:
-        name: window-sf3convert
-        path: build/Prod/sf3convert
-        retention-days: 28
+    # - uses: actions/upload-artifact@v4
+    #   with:
+    #     name: window-sf3convert
+    #     path: build/Prod/sf3convert
+    #     retention-days: 28
 
     - name: Test conversion
       run: make test-prod

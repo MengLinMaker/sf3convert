@@ -40,7 +40,7 @@ jobs:
       with:
         python-version: '3.10'
     - name: Set up MinGW
-      if: startsWith(${{ matrix.config.os }}, 'windows')
+      if: startsWith(matrix.config.os, 'windows')
       uses: egor-tensin/setup-mingw@v2
       with:
         platform: x64

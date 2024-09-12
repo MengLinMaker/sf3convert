@@ -42,6 +42,14 @@ jobs:
     - name: Install dependencies
       run: pip install cmake ninja conan && make install
 
+    # Debug windows conan
+    - uses: actions/upload-artifact@v4
+      if: startsWith(matrix.config.os, 'windows')
+      with:
+        name: windows-conan
+        path: build
+        retention-days: 28
+
     # Build package
     - name: Build release package - ${{ matrix.config.os }}
       run: ${{ matrix.config.build_script }}

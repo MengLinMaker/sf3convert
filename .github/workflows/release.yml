@@ -36,6 +36,9 @@ jobs:
         key: build-${{ matrix.config.os }}-cache-conan
 
     # Install dependencies
+    - name: Setup windows MSVC
+      if: startsWith(matrix.config.os, 'windows')
+      run: cmd "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10'

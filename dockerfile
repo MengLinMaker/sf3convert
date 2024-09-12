@@ -9,7 +9,7 @@ RUN echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99custom && \
     echo "Acquire::BrokenProxy    true;" >> /etc/apt/apt.conf.d/99custom && \
 	apt update -y --fix-missing && \
 	# Conan peer dependencies: make, cmake & gcc
-	apt install -y --fix-missing make cmake build-essential
+	apt install -y --fix-missing make cmake ninja-build build-essential
 
 # Install dependencies
 COPY conanfile.py ./

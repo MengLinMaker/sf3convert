@@ -19,7 +19,7 @@ prod:
 
 windows:
 	cmake --preset conan-default
-	make -C build
+	cmake --build build
 
 #=============================================================================
 # TEST

@@ -28,7 +28,7 @@ jobs:
         python-version: '3.10'
 
     - name: Install dependencies
-      run: pip install cmake ninja conan && make install
+      run: pip install cmake conan && make install
 
     - name: Build release package
       run: make prod
@@ -61,7 +61,7 @@ jobs:
         python-version: '3.10'
 
     - name: Install dependencies
-      run: pip install cmake ninja conan && make install
+      run: pip install cmake conan && make install
 
     - name: Build release package
       run: make prod

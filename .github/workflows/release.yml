@@ -16,6 +16,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Cache pip Dependencies
+      id: build-ubuntu-cache-pip
+      uses: actions/cache@v2
+      with:
+        path: /home/runner/.cache
+        key: build-ubuntu-cache-pip
+
     - name: Cache Conan Dependencies
       id: build-ubuntu-cache-conan
       uses: actions/cache@v2
@@ -49,6 +56,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Cache pip Dependencies
+      id: build-macos-cache-pip
+      uses: actions/cache@v2
+      with:
+        path: /Users/runner/Library/Caches
+        key: build-macos-cache-pip
+
     - name: Cache Conan Dependencies
       id: build-macos-cache-conan
       uses: actions/cache@v2
@@ -81,6 +95,13 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v4
+
+    - name: Cache pip Dependencies
+      id: build-windows-cache-pip
+      uses: actions/cache@v2
+      with:
+        path: c:\users\runneradmin\appdata\local\pip\cache
+        key: build-windows-cache-pip
 
     - name: Cache Conan Dependencies
       id: build-windows-cache-conan

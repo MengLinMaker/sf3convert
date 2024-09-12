@@ -1,6 +1,5 @@
 #include "sfont.h"
 
-#include <sndfile.h>
 #include <vorbis/vorbisenc.h>
 
 #include <math.h>
@@ -1000,53 +999,6 @@ void SoundFont::writeSample(const Sample *s)
 	writeChar(s->pitchadj);
 	writeWord(0);
 	writeWord(s->sampletype);
-}
-
-//---------------------------------------------------------
-//   writeSampleFile
-//---------------------------------------------------------
-
-bool SoundFont::writeSampleFile(Sample *s, std::string name)
-{
-	std::string path = "waves/" + name + ".ogg";
-
-	std::fstream f(path);
-	if (!f.is_open())
-	{
-		fprintf(stderr, "cannot open <%s>\n", path.c_str());
-		return false;
-	}
-	f.seekg(samplePos + s->start * sizeof(short));
-	int len = s->end - s->start;
-	short buffer[len];
-	f.read((char *)buffer, len * sizeof(short));
-	f.close();
-
-	// int format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
-	int format = SF_FORMAT_OGG | SF_FORMAT_VORBIS;
-
-	SF_INFO info;
-	memset(&info, 0, sizeof(info));
-	info.channels = 1;
-	info.samplerate = s->samplerate;
-	info.format = format;
-
-	SNDFILE *sf = sf_open(path.c_str(), SFM_WRITE, &info);
-	if (sf == 0)
-	{
-		fprintf(stderr, "open soundfile <%s> failed: %s\n",
-				path.c_str(), sf_strerror(sf));
-		return false;
-	}
-
-	sf_write_short(sf, buffer, len);
-
-	if (sf_close(sf))
-	{
-		fprintf(stderr, "close soundfile failed\n");
-		return false;
-	}
-	return true;
 }
 
 //---------------------------------------------------------

@@ -30,7 +30,7 @@ compose:
 	docker-compose up --build
 
 test-prod:
-	build/Prod/sf3convert test/sample.sf2 test/sample-release.sf3
+	build/Prod/sf3convert test/sample.sf2 test/sample-prod.sf3
 
 #=============================================================================
 # DOC

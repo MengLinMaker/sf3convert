@@ -18,8 +18,6 @@ prod:
 	ninja -C build/Prod
 
 windows:
-	D:/a/sftools/sftools/build/generators/conanbuild.bat
-	D:/a/sftools/sftools/build/generators/conanrun.bat
 	cmake --preset conan-default
 	make -C build
 

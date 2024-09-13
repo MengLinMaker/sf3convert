@@ -58,6 +58,7 @@ jobs:
         with:
           name: ${{ matrix.config.os }}-sf3convert
           path: build/Prod/sf3convert
+      - run: chmod +x build/Prod/sf3convert
 
       # Test package
       - name: Test conversion

@@ -239,7 +239,7 @@ class SoundFont {
     void writeInst();
     void writeShdr();
 
-    int writeCompressedSample(Sample *);
+    int writeCompressedSample(Sample &);
 
   public:
     SoundFont(const std::string &);

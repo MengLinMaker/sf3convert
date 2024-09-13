@@ -725,8 +725,7 @@ void SoundFont::writeSmpl() {
     if (writeCompressed) {
         for (Sample *s : samples) {
             s->sampletype |= 0x10;
-            Sample &_s = *s;
-            int len = writeCompressedSample(_s);
+            int len = writeCompressedSample(s);
             s->start = sampleLen;
             sampleLen += len;
             s->end = sampleLen;
@@ -950,14 +949,14 @@ void SoundFont::writeSample(const Sample *s) {
 //   writeCompressedSample
 //---------------------------------------------------------
 
-int SoundFont::writeCompressedSample(Sample &s) {
+int SoundFont::writeCompressedSample(Sample *s) {
     std::fstream f(path);
     if (!f.is_open()) {
         fprintf(stderr, "cannot open <%s>\n", path.c_str());
         return 0;
     }
-    f.seekg(samplePos + s.start * sizeof(short));
-    const int samples = s.end - s.start;
+    f.seekg(samplePos + s->start * sizeof(short));
+    const int samples = s->end - s->start;
     short ibuffer[samples];
     f.read((char *)ibuffer, samples * sizeof(short));
     f.close();
@@ -971,7 +970,7 @@ int SoundFont::writeCompressedSample(Sample &s) {
     vorbis_comment vc;
 
     vorbis_info_init(&vi);
-    int ret = vorbis_encode_init_vbr(&vi, 1, s.samplerate, _oggQuality);
+    int ret = vorbis_encode_init_vbr(&vi, 1, s->samplerate, _oggQuality);
     if (ret) {
         printf("vorbis init failed\n");
         return false;

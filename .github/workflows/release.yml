@@ -36,9 +36,6 @@ jobs:
         key: build-${{ matrix.config.os }}-cache-conan
 
     # Install dependencies
-    - name: Remove windows conan profile
-      if: startsWith(matrix.config.os, 'windows')
-      run: del ${{ matrix.config.conan_cache }}\profiles\default
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10'

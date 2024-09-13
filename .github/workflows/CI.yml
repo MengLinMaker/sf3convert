@@ -19,12 +19,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Use mingw on windows
-      if: startsWith(matrix.config.os, 'windows')
-      uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x64
-
     # Conan deps are cached in different locations depending on OS
     - name: Cache Conan dependencies - ${{ matrix.config.os }}
       uses: actions/cache@v2

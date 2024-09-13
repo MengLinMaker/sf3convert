@@ -35,6 +35,14 @@ jobs:
         path: ${{ matrix.config.conan_cache }}
         key: build-${{ matrix.config.os }}-cache-conan
 
+    # Cache python deps for slower windows install
+    - name: Cache Conan Dependencies - ${{ matrix.config.os }}
+      if: startsWith(matrix.config.os, 'windows')
+      uses: actions/cache@v2
+      with:
+        path: c:\users\runneradmin\appdata\local\pip\cache
+        key: build-${{ matrix.config.os }}-cache-pip
+
     # Install dependencies
     - uses: actions/setup-python@v5
       with:

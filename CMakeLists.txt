@@ -20,6 +20,6 @@ add_executable(${PROJECT_NAME} ${MY_SOURCES})
 find_package(CLI11 REQUIRED)
 find_package(Vorbis REQUIRED)
 target_link_libraries(${PROJECT_NAME}
-	CLI11::CLI11
+    CLI11::CLI11
     vorbis::vorbis
 )

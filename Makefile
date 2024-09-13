@@ -18,8 +18,8 @@ prod:
 	ninja -C build/Prod
 
 windows:
-	cmake --preset conan-default
-	cmake --build build --config Release
+	cmake -B build/Prod --preset conan-default
+	cmake --build build/Prod --config Release
 
 #=============================================================================
 # TEST

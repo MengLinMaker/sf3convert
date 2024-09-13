@@ -20,8 +20,7 @@ prod:
 windows:
 	cmake --preset conan-default
 	cmake --build build --config Release
-	mkdir build\Prod
-	move build\* build\Prod
+	ren build/Release build/Prod
 
 #=============================================================================
 # TEST

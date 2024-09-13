@@ -1,7 +1,6 @@
 #include "sfont/sfont.h"
 
 #include <CLI/CLI.hpp>
-#include <getopt.h>
 
 SoundFont readSoundFont(const char *soundFontPath) {
     SoundFont soundFont(soundFontPath);

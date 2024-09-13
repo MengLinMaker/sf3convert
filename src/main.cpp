@@ -52,6 +52,11 @@ int main(int argc, char *argv[]) {
     }
 
     cli.require_subcommand();
-    cli.parse(argc, argv);
-    exit(0);
+    try {
+        cli.parse(argc, argv);
+    } catch (const CLI::ParseError &e) {
+        std::cout << e.what();
+        return cli.exit(e);
+    }
+    return 0;
 }

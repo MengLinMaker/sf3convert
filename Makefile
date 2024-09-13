@@ -28,8 +28,13 @@ endif
 #=============================================================================
 
 test-prod:
-	build/Prod/sf3convert convert "./test/sample.sf2" "./test/sample-prod.sf3"
-	build/Prod/sf3convert preset "./test/sample.sf2"
+ifeq ($(OS),Windows_NT)
+	".\build\Prod\sf3convert.exe" convert ".\test\sample.sf2" ".\test\sample-prod.sf3"
+	".\build\Prod\sf3convert.exe" preset ".\test\sample.sf2"
+else
+	build/Prod/sf3convert convert test/sample.sf2 test/sample-prod.sf3
+	build/Prod/sf3convert preset test/sample.sf2
+endif
 
 #=============================================================================
 # DOC

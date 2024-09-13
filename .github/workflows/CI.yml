@@ -35,6 +35,9 @@ jobs:
         key: build-${{ matrix.config.os }}-cache-pip
 
     # Install dependencies
+    - name: Use mingw on windows
+      if: startsWith(matrix.config.os, 'windows')
+      run: choco install mingw && del C:\Users\runneradmin\.conan2\profiles\default
     - uses: actions/setup-python@v5
       with:
         python-version: '3.10'

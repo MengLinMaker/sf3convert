@@ -9,8 +9,6 @@
 #include <string>
 
 #define BE_SHORT(x) ((((x) & 0xFF) << 8) | (((x) >> 8) & 0xFF))
-#define BE_LONG(x)                                                                                 \
-    ((((x) & 0xFF) << 24) | (((x) & 0xFF00) << 8) | (((x) & 0xFF0000) >> 8) | (((x) >> 24) & 0xFF))
 #define FOURCC(a, b, c, d) a << 24 | b << 16 | c << 8 | d
 #define BLOCK_SIZE 1024
 
@@ -143,31 +141,20 @@ unsigned SoundFont::readDword() {
     unsigned format;
     if (file->read((char *)&format, 4).fail())
         throw(std::string("unexpected end of file\n"));
-    if (std::endian::native == std::endian::big)
-        return BE_LONG(format);
-    else
-        return format;
+    return format;
 }
 
 //---------------------------------------------------------
 //   writeDword
 //---------------------------------------------------------
 
-void SoundFont::writeDword(int val) {
-    if (std::endian::native == std::endian::big)
-        val = BE_LONG(val);
-    write((char *)&val, 4);
-}
+void SoundFont::writeDword(int val) { write((char *)&val, 4); }
 
 //---------------------------------------------------------
 //   writeWord
 //---------------------------------------------------------
 
-void SoundFont::writeWord(unsigned short int val) {
-    if (std::endian::native == std::endian::big)
-        val = BE_SHORT(val);
-    write((char *)&val, 2);
-}
+void SoundFont::writeWord(unsigned short int val) { write((char *)&val, 2); }
 
 //---------------------------------------------------------
 //   writeByte
@@ -185,11 +172,7 @@ void SoundFont::writeChar(char val) { write((char *)&val, 1); }
 //   writeShort
 //---------------------------------------------------------
 
-void SoundFont::writeShort(short val) {
-    if (std::endian::native == std::endian::big)
-        val = BE_SHORT(val);
-    write((char *)&val, 2);
-}
+void SoundFont::writeShort(short val) { write((char *)&val, 2); }
 
 //---------------------------------------------------------
 //   readWord
@@ -199,10 +182,7 @@ int SoundFont::readWord() {
     unsigned short format;
     if (file->read((char *)&format, 2).fail())
         throw(std::string("unexpected end of file\n"));
-    if (std::endian::native == std::endian::big)
-        return BE_SHORT(format);
-    else
-        return format;
+    return format;
 }
 
 //---------------------------------------------------------
@@ -213,10 +193,7 @@ int SoundFont::readShort() {
     short format;
     if (file->read((char *)&format, 2).fail())
         throw(std::string("unexpected end of file\n"));
-    if (std::endian::native == std::endian::big)
-        return BE_SHORT(format);
-    else
-        return format;
+    return format;
 }
 
 //---------------------------------------------------------

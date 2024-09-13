@@ -956,8 +956,8 @@ int SoundFont::writeCompressedSample(Sample *s) {
         return 0;
     }
     f.seekg(samplePos + s->start * sizeof(short));
-    const int samples = s->end - s->start;
-    short ibuffer[samples];
+    int samples = s->end - s->start;
+    short *ibuffer = new short[samples];
     f.read((char *)ibuffer, samples * sizeof(short));
     f.close();
 

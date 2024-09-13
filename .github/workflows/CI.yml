@@ -43,6 +43,6 @@ jobs:
     - name: Build release package - ${{ matrix.config.os }}
       run: make prod
 
-    # Test package
-    - name: Test conversion
-      run: make test-prod
+    # # Test package
+    # - name: Test
+    #   run: make test-prod

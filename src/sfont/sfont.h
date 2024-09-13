@@ -240,7 +240,6 @@ class SoundFont {
     void writeShdr();
 
     int writeCompressedSample(Sample *);
-    bool writeCSample(Sample *, int);
     char *readCompressedSample(Sample *);
 
   public:
@@ -248,7 +247,5 @@ class SoundFont {
     ~SoundFont();
     bool read();
     bool write(std::fstream *, double oggQuality, double oggAmp);
-    bool writeCode(std::vector<int>);
-    bool writeCode();
     void dumpPresets();
 };

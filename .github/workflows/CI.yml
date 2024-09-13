@@ -43,6 +43,14 @@ jobs:
     - name: Build release package - ${{ matrix.config.os }}
       run: make prod
 
+    # Binary artifact
+    - name: Save binary artifact for debugging
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.config.os }}-sf3convert
+        path: build/Prod/sf3convert
+        retention-days: 1
+
     # Test package
     - name: Test
       run: make test-prod

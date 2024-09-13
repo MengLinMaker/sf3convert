@@ -240,7 +240,6 @@ class SoundFont {
     void writeShdr();
 
     int writeCompressedSample(Sample *);
-    char *readCompressedSample(Sample *);
 
   public:
     SoundFont(const std::string &);

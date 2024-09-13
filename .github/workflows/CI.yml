@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    name: ${{ matrix.config.os }}
+    name: build-${{ matrix.config.os }}
     runs-on: ${{ matrix.config.os }}-latest
     strategy:
       fail-fast: false
@@ -43,7 +43,7 @@ jobs:
 
   # Static build should run tests without dependencies
   test:
-    name: ${{ matrix.config.os }}
+    name: test-${{ matrix.config.os }}
     runs-on: ${{ matrix.config.os }}-latest
     strategy:
       matrix:

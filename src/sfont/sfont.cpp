@@ -8,7 +8,6 @@
 #include <stdexcept>
 #include <string>
 
-#define BE_SHORT(x) ((((x) & 0xFF) << 8) | (((x) >> 8) & 0xFF))
 #define FOURCC(a, b, c, d) a << 24 | b << 16 | c << 8 | d
 #define BLOCK_SIZE 1024
 

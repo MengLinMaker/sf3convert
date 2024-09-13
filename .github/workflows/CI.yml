@@ -34,33 +34,6 @@ jobs:
     - name: Build release package - ${{ matrix.config.os }}
       run: ${{ matrix.config.build_script }}
 
-    # Release package
-    - run: chmod +x build/Prod/sf3convert
-    - uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.config.os }}-sf3convert
-        path: build/Prod/sf3convert
-        retention-days: 1
-
-  # Static build should run tests without dependencies
-  test:
-    name: test-${{ matrix.config.os }}
-    runs-on: ${{ matrix.config.os }}-latest
-    strategy:
-      matrix:
-        config:
-          - os: ubuntu
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-
-      # Get binary build
-      - uses: actions/download-artifact@v4
-        with:
-          name: ${{ matrix.config.os }}-sf3convert
-          path: build/Prod/sf3convert
-      - run: chmod +x build/Prod/sf3convert
-
-      # Test package
-      - name: Test conversion
-        run: make test-prod
+    # Test package
+    - name: Test conversion
+      run: make test-prod

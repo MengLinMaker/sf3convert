@@ -14,13 +14,14 @@ install:
 #=============================================================================
 
 prod:
-	cmake -B build/Prod --preset prod
-	ninja -C build/Prod
-
-windows:
+ifeq ($(OS),Windows_NT)
 	cmake --preset conan-default
 	cmake --build build --config Release
 	ren build/Release build/Prod
+else
+	cmake -B build/Prod --preset prod
+	ninja -C build/Prod
+endif
 
 #=============================================================================
 # TEST

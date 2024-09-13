@@ -12,7 +12,6 @@ jobs:
         config:
           - os: ubuntu
             conan_cache: /home/runner/.conan2
-            build_script: make prod
     steps:
     - uses: actions/checkout@v4
 
@@ -32,7 +31,7 @@ jobs:
 
     # Build package
     - name: Build release package - ${{ matrix.config.os }}
-      run: ${{ matrix.config.build_script }}
+      run: make prod
 
     # Test package
     - name: Test conversion

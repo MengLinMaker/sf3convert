@@ -18,13 +18,10 @@ jobs:
         config:
           - os: ubuntu
             conan_cache: /home/runner/.conan2
-            build_script: make prod
           - os: macos
             conan_cache: /Users/runner/.conan2
-            build_script: make prod
           - os: windows
             conan_cache: C:\Users\runneradmin\.conan2
-            build_script: make windows
     steps:
     - uses: actions/checkout@v4
 
@@ -52,7 +49,7 @@ jobs:
 
     # Build package
     - name: Build release package - ${{ matrix.config.os }}
-      run: ${{ matrix.config.build_script }}
+      run: make prod
 
     # Release package
     - uses: actions/upload-artifact@v4

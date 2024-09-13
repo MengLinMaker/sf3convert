@@ -11,6 +11,10 @@ class CompressorRecipe(ConanFile):
     }
     generators = "CMakeToolchain", "CMakeDeps"
 
+    def build(self):
+        if self.settings.compiler == 'msvc':
+            self.settings.compiler.runtime="static"
+
     def build_requirements(self):
         self.tool_requires("doxygen/1.9.4")
         self.tool_requires("ninja/1.12.1")

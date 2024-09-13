@@ -1,0 +1,64 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: ubuntu
+            conan_cache: /home/runner/.conan2
+            build_script: make prod
+    steps:
+    - uses: actions/checkout@v4
+
+    # Conan deps are cached in different locations depending on OS
+    - name: Cache Conan Dependencies - ${{ matrix.config.os }}
+      uses: actions/cache@v2
+      with:
+        path: ${{ matrix.config.conan_cache }}
+        key: build-${{ matrix.config.os }}-cache-conan
+
+    # Install dependencies
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: pip install cmake ninja conan && make install
+
+    # Build package
+    - name: Build release package - ${{ matrix.config.os }}
+      run: ${{ matrix.config.build_script }}
+
+    # Release package
+    - uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.config.os }}-sf3convert
+        path: build/Prod/sf3convert
+        retention-days: 28
+
+  # Static build should run tests without dependencies
+  test:
+    name: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.os }}-latest
+    strategy:
+      matrix:
+        config:
+          - os: ubuntu
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      # Get binary build
+      - uses: actions/download-artifact@master
+        with:
+          name: ${{ matrix.config.os }}-sf3convert
+          path: build/Prod/sf3convert
+
+      # Test package
+      - name: Test conversion
+        run: make test-prod

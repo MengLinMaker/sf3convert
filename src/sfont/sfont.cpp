@@ -60,6 +60,13 @@ SoundFont::~SoundFont() {
 //   read
 //---------------------------------------------------------
 
+void compareFourcc(char *original, const char *expected) {
+    const auto originalFourcc = FOURCC(original[0], original[1], original[2], original[3]);
+    const auto expectedFourcc = FOURCC(expected[0], expected[1], expected[2], expected[3]);
+    if (originalFourcc != expectedFourcc)
+        throw fprintf(stderr, "Invalid fourcc: <%s>, expected <%s>\n", original, expected);
+}
+
 bool SoundFont::read() {
     file = new std::fstream(path);
     if (!file->is_open()) {
@@ -68,14 +75,17 @@ bool SoundFont::read() {
         return false;
     }
     try {
-        int len = readFourcc("RIFF");
-        readSignature("sfbk");
+        char fourcc[4];
+        int len = readFourcc(fourcc);
+        compareFourcc(fourcc, "RIFF");
+        readSignature(fourcc);
+        compareFourcc(fourcc, "sfbk");
         len -= 4;
         while (len) {
-            int len2 = readFourcc("LIST");
-            len -= (len2 + 8);
-            char fourcc[4];
+            int len2 = readFourcc(fourcc);
+            compareFourcc(fourcc, "LIST");
             readSignature(fourcc);
+            len -= (len2 + 8);
             len2 -= 4;
             while (len2) {
                 int len3 = readFourcc(fourcc);

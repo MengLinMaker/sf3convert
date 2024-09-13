@@ -17,7 +17,7 @@ prod:
 ifeq ($(OS),Windows_NT)
 	cmake --preset conan-default
 	cmake --build build --config Release
-	ren build/Release build/Prod
+	ren .\build\Release .\build\Prod
 else
 	cmake -B build/Prod --preset prod
 	ninja -C build/Prod

@@ -77,15 +77,11 @@ bool SoundFont::read() {
         while (len) {
             int len2 = readFourcc("LIST");
             len -= (len2 + 8);
-            char fourcc[5];
-            fourcc[0] = 0;
+            char fourcc[4];
             readSignature(fourcc);
-            fourcc[4] = 0;
             len2 -= 4;
             while (len2) {
-                fourcc[0] = 0;
                 int len3 = readFourcc(fourcc);
-                fourcc[4] = 0;
                 len2 -= (len3 + 8);
                 readSection(fourcc, len3);
             }

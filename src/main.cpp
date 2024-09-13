@@ -1,16 +1,7 @@
 #include "sfont/sfont.h"
 
+#include <CLI/CLI.hpp>
 #include <getopt.h>
-
-static void cliUsage(const char *pname)
-{
-	fprintf(stderr, "\nUsage: %s [-flags] soundfont [outfile]\n", pname);
-	fprintf(stderr, "   -h     help\n");
-	fprintf(stderr, "   -q qq  ogg quality\n");
-	fprintf(stderr, "   -a nn  amplification in dB before ogg compression\n");
-	fprintf(stderr, "   -d     dump presets\n");
-	fprintf(stderr, "\n");
-}
 
 SoundFont readSoundFont(const char *soundFontPath)
 {
@@ -25,55 +16,46 @@ SoundFont readSoundFont(const char *soundFontPath)
 
 int main(int argc, char *argv[])
 {
-	if (argc <= 1)
-	{
-		fprintf(stderr, "\nNot enough arguments\n");
-		cliUsage(argv[0]);
-		exit(1);
-	}
+	CLI::App cli("SoundFont utilities");
+	// Prefer detailed help flag over summary
+	cli.set_help_flag("");
+	cli.set_help_all_flag("-h", "Print this help message and exit");
 
-	double oggQuality = 0;
-	double oggDbAmp = 0;
-	char flag;
-	while ((flag = getopt(argc, argv, "q:a:d")) != EOF)
+	CLI::App *convertCli = cli.add_subcommand("convert", "Convert SoundFont2 to SoundFont3");
 	{
-		switch (flag)
-		{
-		case 'q':
-			oggQuality = atof(optarg);
-			break;
-		case 'a':
-			oggDbAmp = atof(optarg);
-			break;
-		case 'd':
-		{
-			const char *soundFontPath = argv[2];
-			SoundFont soundFont = readSoundFont(soundFontPath);
-			soundFont.dumpPresets();
+		double oggQuality = 0;
+		double oggDbAmp = 0;
+		std::string inputSoundFontPath = "";
+		std::string outputSoundFontPath = "";
+		convertCli->add_option("-q", oggQuality, "Ogg quality")->check(CLI::Range(0.0, 1.0));
+		convertCli->add_option("-a", oggDbAmp, "Amplify sample dB")->check(CLI::Range(-60.0, 60.0));
+		convertCli->add_option("input-soundfont", inputSoundFontPath)->required();
+		convertCli->add_option("output-soundfont", outputSoundFontPath)->required();
+		convertCli->callback([&oggQuality, &oggDbAmp, &inputSoundFontPath, &outputSoundFontPath](){
+			std::fstream newSoundFont;
+			newSoundFont.open(outputSoundFontPath, std::fstream::out);
+			if (!newSoundFont)
+			{
+				fprintf(stderr, "Failed to setup output SoundFont: %s\n", outputSoundFontPath.c_str());
+				exit(2);
+			}
+			readSoundFont(inputSoundFontPath.c_str()).write(&newSoundFont, oggQuality, oggDbAmp);
+			newSoundFont.close();
 			exit(0);
-		}
-		default:
-			fprintf(stderr, "\nSupported commands\n");
-			cliUsage(argv[0]);
-			exit(0);
-		}
+		});
 	}
 
-	// Shift argv position to non-flag args
-	argv += optind;
-
-	const char *soundFontPath = argv[0];
-	SoundFont soundFont = readSoundFont(soundFontPath);
-
-	const char *newSoundFontPath = argv[1];
-	std::fstream newSoundFont;
-	newSoundFont.open(newSoundFontPath, std::fstream::out);
-	if (!newSoundFont)
+	CLI::App *presetCli = cli.add_subcommand("preset", "Dump SoundFont preset names");
 	{
-		fprintf(stderr, "Failed to setup output SoundFont: %s\n", newSoundFontPath);
-		exit(2);
+		std::string inputSoundFontPath = "";
+		presetCli->add_option("input-soundfont", inputSoundFontPath)->required();
+		presetCli->callback([&inputSoundFontPath](){
+			readSoundFont(inputSoundFontPath.c_str()).dumpPresets();
+			exit(0);
+		});
 	}
-	soundFont.write(&newSoundFont, oggQuality, oggDbAmp);
-	newSoundFont.close();
+
+	cli.require_subcommand();
+	cli.parse(argc, argv);
 	exit(0);
 }

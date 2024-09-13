@@ -26,7 +26,8 @@ windows:
 #=============================================================================
 
 test-prod:
-	build/Prod/sf3convert test/sample.sf2 test/sample-prod.sf3
+	build/Prod/sf3convert convert test/sample.sf2 test/sample-prod.sf3
+	build/Prod/sf3convert preset test/sample.sf2
 
 #=============================================================================
 # DOC

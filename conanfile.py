@@ -17,6 +17,7 @@ class CompressorRecipe(ConanFile):
         self.test_requires("gtest/1.15.0")
 
     def requirements(self):
+        self.requires("cli11/2.4.2")
         self.requires("vorbis/1.3.7")
 
     def layout(self):

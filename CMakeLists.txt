@@ -17,7 +17,9 @@ file(GLOB_RECURSE MY_SOURCES src/*.cpp)
 add_executable(${PROJECT_NAME} ${MY_SOURCES})
 
 # Autosearch lib dependencies
+find_package(CLI11 REQUIRED)
 find_package(Vorbis REQUIRED)
 target_link_libraries(${PROJECT_NAME}
+	CLI11::CLI11
     vorbis::vorbis
 )

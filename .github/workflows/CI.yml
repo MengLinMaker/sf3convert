@@ -12,8 +12,10 @@ jobs:
         config:
           - os: ubuntu
             conan_cache: /home/runner/.conan2
+            extension: ""
           - os: windows
             conan_cache: C:\Users\runneradmin\.conan2
+            extension: .exe
     steps:
     - uses: actions/checkout@v4
 
@@ -48,7 +50,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.config.os }}-sf3convert
-        path: build/Prod/sf3convert
+        path: build/Prod/sf3convert${{ matrix.config.extension }}
         retention-days: 1
 
     # Test package

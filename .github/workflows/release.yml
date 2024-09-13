@@ -18,10 +18,13 @@ jobs:
         config:
           - os: ubuntu
             conan_cache: /home/runner/.conan2
+            extension: ""
           - os: macos
             conan_cache: /Users/runner/.conan2
+            extension: ""
           - os: windows
             conan_cache: C:\Users\runneradmin\.conan2
+            extension: .exe
     steps:
     - uses: actions/checkout@v4
 
@@ -51,12 +54,13 @@ jobs:
     - name: Build release package - ${{ matrix.config.os }}
       run: make prod
 
-    # Release package
-    - uses: actions/upload-artifact@v4
+    # Binary artifact
+    - name: Save binary artifact for release
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.config.os }}-sf3convert
-        path: build/Prod/sf3convert
-        retention-days: 28
+        path: build/Prod/sf3convert${{ matrix.config.extension }}
+        retention-days: 1
 
     # Test package
     - name: Test

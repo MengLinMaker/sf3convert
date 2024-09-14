@@ -79,6 +79,8 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: release
+    - name: List files
+      run: ls -R release
 
     # Release
     - name: Release
@@ -86,4 +88,4 @@ jobs:
       with:
         draft: true
         fail_on_unmatched_files: true
-        files: release/*
+        files: release/*/*

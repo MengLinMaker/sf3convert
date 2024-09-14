@@ -2,6 +2,8 @@ name: Build for release
 
 on:
   push:
+    branches:
+      - master
     tags:
       - "v*.*.*"
 
@@ -56,16 +58,29 @@ jobs:
       run: make test-prod
 
     # Binary artifact
+    - name: Rename binary
+      run: mv build/Prod/sf3convert${{ matrix.config.extension }} release/sf3convert-${{ matrix.config.os }}${{ matrix.config.extension }}
     - name: Save binary artifact for release
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.config.os }}-sf3convert
-        path: build/Prod/sf3convert${{ matrix.config.extension }}
-        retention-days: 1
+        path: release
 
-    # Release binary
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    # Download release artifacts
+    - name: Download and extract artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: build.release
+
+    # Release
     - name: Release
       uses: softprops/action-gh-release@v2
       with:
-        files: |
-          build/Prod/sf3convert${{ matrix.config.extension }}
+        draft: true
+        fail_on_unmatched_files: true
+        files: release/*

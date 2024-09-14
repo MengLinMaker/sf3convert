@@ -88,4 +88,4 @@ jobs:
       with:
         draft: true
         fail_on_unmatched_files: true
-        files: release/*
+        files: release/*/*

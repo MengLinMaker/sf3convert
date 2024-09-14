@@ -12,7 +12,7 @@ SoundFont readSoundFont(const char *soundFontPath) {
 }
 
 int main(int argc, char *argv[]) {
-    CLI::App cli("SoundFont utilities");
+    CLI::App cli("SoundFont cli tool");
     // Prefer detailed help flag over summary
     cli.set_help_flag("");
     cli.set_help_all_flag("-h", "Print this help message and exit");
@@ -55,7 +55,6 @@ int main(int argc, char *argv[]) {
     try {
         cli.parse(argc, argv);
     } catch (const CLI::ParseError &e) {
-        std::cout << e.what();
         return cli.exit(e);
     }
     return 0;

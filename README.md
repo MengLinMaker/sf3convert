@@ -1,7 +1,11 @@
-# sf3convert
-Compress SoundFont, from `.sf2` to `.sf3`:
-* Achieve 10x lossy compression with OGG VORBIS.
-* Used in [MuseScore](http://musescore.org).
+<h1 align="center">sf3convert</h1>
+
+<div flex align="center">
+<img src="https://img.shields.io/github/v/release/MengLinMaker/sf3convert">
+<img src="https://img.shields.io/github/actions/workflow/status/menglinmaker/sf3convert/CI.yml?label=CI">
+</div>
+
+Compress SoundFont, from `.sf2` to `.sf3`.
 
 This is a fork of [MuseScore sftools](https://github.com/musescore/sftools) with more compliance with [RIFF](https://johnloomis.org/cpe102/asgn/asgn1/riff.html) format. The compressed SoundFont3 is non standard
 

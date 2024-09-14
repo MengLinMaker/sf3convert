@@ -78,7 +78,7 @@ jobs:
     - name: Download and extract artifacts
       uses: actions/download-artifact@v4
       with:
-        path: build.release
+        path: release
 
     # Release
     - name: Release

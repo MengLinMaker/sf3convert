@@ -60,8 +60,12 @@ jobs:
       run: make test-prod
 
     # Binary artifact
-    - name: Rename binary
-      run: mkdir release && tar -czvf release/${{ matrix.config.os }}-sf3convert.tar.gz build/Prod
+    - name: Package binary
+      run: >
+        mkdir release &&
+        cd build/Prod &&
+        tar cfJ ../../release/${{ matrix.config.os }}-sf3convert.tar.xz sf3convert* &&
+        cd ../../
     - name: Save binary artifact for release
       uses: actions/upload-artifact@v4
       with:

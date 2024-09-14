@@ -61,7 +61,7 @@ jobs:
 
     # Binary artifact
     - name: Rename binary
-      run: mkdir release && mv build/Prod/sf3convert${{ matrix.config.extension }} release/sf3convert-${{ matrix.config.os }}${{ matrix.config.extension }}
+      run: mkdir release && mv build/Prod/sf3convert${{ matrix.config.extension }} release/sf3convert${{ matrix.config.extension }}
     - name: Save binary artifact for release
       uses: actions/upload-artifact@v4
       with:

@@ -1,12 +1,9 @@
 name: Build for release
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   build:
@@ -54,6 +51,10 @@ jobs:
     - name: Build release package - ${{ matrix.config.os }}
       run: make prod
 
+    # Test package
+    - name: Test
+      run: make test-prod
+
     # Binary artifact
     - name: Save binary artifact for release
       uses: actions/upload-artifact@v4
@@ -62,6 +63,9 @@ jobs:
         path: build/Prod/sf3convert${{ matrix.config.extension }}
         retention-days: 1
 
-    # Test package
-    - name: Test
-      run: make test-prod
+    # Release binary
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          build/Prod/sf3convert${{ matrix.config.extension }}

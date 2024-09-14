@@ -5,6 +5,12 @@ Compress SoundFont, from `.sf2` to `.sf3`:
 
 This is a fork of [MuseScore sftools](https://github.com/musescore/sftools) with more compliance with [RIFF](https://johnloomis.org/cpe102/asgn/asgn1/riff.html) format. The compressed SoundFont3 is non standard
 
+## [Download](https://github.com/MengLinMaker/sftools/releases)
+
+Precompiled binaries are available for:
+- linux: `ubuntu-sf3convert.tar.xz`
+- macos: `macos-sf3convert.tar.xz`
+
 ## Compilation
 Ensure `make`, `cmake`, `ninja` and `conan` are installed beforehand.
 1. Install dependencies `make install`.

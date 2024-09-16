@@ -12,13 +12,10 @@ jobs:
         config:
           - os: ubuntu
             conan_cache: /home/runner/.conan2
-            extension: ""
           # - os: macos
           #   conan_cache: /Users/runner/.conan2
-          #   extension: ""
           # - os: windows
           #   conan_cache: C:\Users\runneradmin\.conan2
-          #   extension: .exe
     steps:
     - uses: actions/checkout@v4
 
@@ -52,12 +49,17 @@ jobs:
       run: make prod
 
     # Binary artifact
-    - name: Save binary artifact for debugging
+    - name: Package binary
+      run: >
+        mkdir bin &&
+        cd build/Prod &&
+        tar cfJ ../../bin/${{ matrix.config.os }}-sf3convert.tar.xz sf3convert* &&
+        cd ../../
+    - name: Save binary artifact for release
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.config.os }}-sf3convert
-        path: build/Prod/sf3convert${{ matrix.config.extension }}
-        retention-days: 1
+        path: bin
 
     # Test package
     - name: Test

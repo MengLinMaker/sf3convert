@@ -19,13 +19,10 @@ jobs:
         config:
           - os: ubuntu
             conan_cache: /home/runner/.conan2
-            extension: ""
           - os: macos
             conan_cache: /Users/runner/.conan2
-            extension: ""
           # - os: windows
           #   conan_cache: C:\Users\runneradmin\.conan2
-          #   extension: .exe
     steps:
     - uses: actions/checkout@v4
 

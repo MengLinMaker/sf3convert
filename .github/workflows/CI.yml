@@ -53,7 +53,7 @@ jobs:
       run: >
         mkdir bin &&
         cd build/Prod &&
-        tar cfJ ../../bin/${{ matrix.config.os }}-sf3convert.tar.xz sf3convert* &&
+        tar -czvf ../../bin/${{ matrix.config.os }}-sf3convert.tar.gz sf3convert* &&
         cd ../../
     - name: Save binary artifact for release
       uses: actions/upload-artifact@v4

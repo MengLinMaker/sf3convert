@@ -81,16 +81,22 @@ bool SoundFont::read() {
         readSignature(fourcc);
         compareFourcc(fourcc, "sfbk");
         len -= 4;
+        unsigned long posg = 12;
+        file->seekg(posg);
         while (len) {
             int len2 = readFourcc(fourcc);
             compareFourcc(fourcc, "LIST");
             readSignature(fourcc);
+            posg += 12;
+            file->seekg(posg);
             len -= (len2 + 8);
             len2 -= 4;
             while (len2) {
                 int len3 = readFourcc(fourcc);
                 len2 -= (len3 + 8);
                 readSection(fourcc, len3);
+                posg += 8 + len3;
+                file->seekg(posg);
             }
         }
     } catch (std::string s) {

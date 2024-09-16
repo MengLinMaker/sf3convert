@@ -14,8 +14,8 @@ jobs:
             conan_cache: /home/runner/.conan2
           # - os: macos
           #   conan_cache: /Users/runner/.conan2
-          # - os: windows
-          #   conan_cache: C:\Users\runneradmin\.conan2
+          - os: windows
+            conan_cache: C:\Users\runneradmin\.conan2
     steps:
     - uses: actions/checkout@v4
 

@@ -264,7 +264,7 @@ char *SoundFont::readString(int n) {
 //---------------------------------------------------------
 
 void SoundFont::readSection(const char *fourcc, int len) {
-    printf("readSection <%s> len %d\n", std::string(fourcc), len);
+    printf("readSection <%c%c%c%c> len %d\n", fourcc[0], fourcc[1], fourcc[2], fourcc[3], len);
 
     switch (FOURCC(fourcc[0], fourcc[1], fourcc[2], fourcc[3])) {
     case FOURCC('i', 'f', 'i', 'l'): // version

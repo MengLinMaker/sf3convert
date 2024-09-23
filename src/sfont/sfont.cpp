@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdexcept>
 #include <string>
+#include <iostream>
 
 #define FOURCC(a, b, c, d) a << 24 | b << 16 | c << 8 | d
 #define BLOCK_SIZE 1024
@@ -99,8 +100,8 @@ bool SoundFont::read() {
                 file->seekg(posg);
             }
         }
-    } catch (std::string s) {
-        printf("read sf file failed: %s\n", s.c_str());
+    } catch (const std::exception& e) {
+        std::cout << "Uncaught exeption: " << e.what();
         delete file;
         return false;
     }
@@ -263,7 +264,7 @@ char *SoundFont::readString(int n) {
 //---------------------------------------------------------
 
 void SoundFont::readSection(const char *fourcc, int len) {
-    printf("readSection <%s> len %d\n", fourcc, len);
+    printf("readSection <%s> len %d\n", std::string(fourcc), len);
 
     switch (FOURCC(fourcc[0], fourcc[1], fourcc[2], fourcc[3])) {
     case FOURCC('i', 'f', 'i', 'l'): // version

@@ -7,7 +7,6 @@
 #include <math.h>
 #include <stdexcept>
 #include <string>
-#include <iostream>
 
 #define FOURCC(a, b, c, d) a << 24 | b << 16 | c << 8 | d
 #define BLOCK_SIZE 1024
@@ -75,7 +74,7 @@ bool SoundFont::read() {
         delete file;
         return false;
     }
-    // try {
+    try {
         char fourcc[4];
         int len = readFourcc(fourcc);
         compareFourcc(fourcc, "RIFF");
@@ -100,11 +99,11 @@ bool SoundFont::read() {
                 file->seekg(posg);
             }
         }
-    // } catch (const std::exception& e) {
-    //     std::cout << "Uncaught exeption: " << e.what();
-    //     delete file;
-    //     return false;
-    // }
+    } catch (std::string s) {
+        printf("read sf file failed: %s\n", s.c_str());
+        delete file;
+        return false;
+    }
     delete file;
     return true;
 }

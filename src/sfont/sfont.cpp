@@ -75,6 +75,7 @@ bool SoundFont::read() {
         return false;
     }
     try {
+        printf("Header chunk <RIFF>\n");
         char fourcc[4];
         int len = readFourcc(fourcc);
         compareFourcc(fourcc, "RIFF");
@@ -84,6 +85,7 @@ bool SoundFont::read() {
         unsigned long posg = 12;
         file->seekg(posg);
         while (len) {
+            printf("Top chunk <LIST>\n");
             int len2 = readFourcc(fourcc);
             compareFourcc(fourcc, "LIST");
             readSignature(fourcc);

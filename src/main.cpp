@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
                         outputSoundFontPath.c_str());
                 exit(2);
             }
+            printf("Converting SoundFont: %s to %s\n", inputSoundFontPath.c_str(), outputSoundFontPath.c_str());
             readSoundFont(inputSoundFontPath.c_str()).write(&newSoundFont, oggQuality, oggDbAmp);
             newSoundFont.close();
             exit(0);
@@ -46,6 +47,7 @@ int main(int argc, char *argv[]) {
         std::string inputSoundFontPath = "";
         presetCli->add_option("input-soundfont", inputSoundFontPath)->required();
         presetCli->callback([&inputSoundFontPath]() {
+            printf("Dump SoundFont presets for: %s\n", inputSoundFontPath.c_str());
             readSoundFont(inputSoundFontPath.c_str()).dumpPresets();
             exit(0);
         });

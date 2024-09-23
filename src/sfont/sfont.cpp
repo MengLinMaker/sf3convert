@@ -75,7 +75,7 @@ bool SoundFont::read() {
         delete file;
         return false;
     }
-    try {
+    // try {
         char fourcc[4];
         int len = readFourcc(fourcc);
         compareFourcc(fourcc, "RIFF");
@@ -100,11 +100,11 @@ bool SoundFont::read() {
                 file->seekg(posg);
             }
         }
-    } catch (const std::exception& e) {
-        std::cout << "Uncaught exeption: " << e.what();
-        delete file;
-        return false;
-    }
+    // } catch (const std::exception& e) {
+    //     std::cout << "Uncaught exeption: " << e.what();
+    //     delete file;
+    //     return false;
+    // }
     delete file;
     return true;
 }

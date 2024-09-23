@@ -69,7 +69,7 @@ void compareFourcc(char *original, const char *expected) {
 }
 
 bool SoundFont::read() {
-    file = new std::fstream(path);
+    file = new std::fstream(path, std::ios::in | std::ios::binary);
     if (!file->is_open()) {
         fprintf(stderr, "cannot open <%s>\n", path.c_str());
         delete file;

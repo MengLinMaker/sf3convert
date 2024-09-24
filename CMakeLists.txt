@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Building static binary requires linking static libraries '.a' or'.lib' extension on windows
 if(WIN32)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:50000000")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /STACK:100000000")
 else()
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 endif()
